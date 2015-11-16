@@ -24,10 +24,12 @@
 
 typedef void* RTP_session;
 
-#define LIBRTP_OK               0;
-#define LIBRTP_UNDEFINED_ERROR  -1;
-#define LIBRTP_MEMORY_ERROR     -2;
-#define LIBRTP_BAD_PARAMETER    -3;
+#define LIBRTP_OK                       0
+#define LIBRTP_UNDEFINED_ERROR          -1
+#define LIBRTP_MEMORY_ERROR             -2
+#define LIBRTP_BAD_PARAMETER            -3
+#define LIBRTP_SESSION_CONFIG_ERROR     -4
+#define LIBRTP_SESSION_ALREADY_STARTED  -5
 
 C_EXPORT_BEGIN
 
