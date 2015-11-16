@@ -20,6 +20,8 @@
 #define C_EXPORT_END
 #endif // __cplusplus
 
+typedef void* RTP_session;
+
 #define LIBRTP_OK               0;
 #define LIBRTP_UNDEFINED_ERROR  -1;
 
@@ -28,6 +30,10 @@ C_EXPORT_BEGIN
 LIBRTP_API int initial_RTP_library(void);
 
 LIBRTP_API int uninitial_RTP_library(void);
+
+LIBRTP_API RTP_session* get_new_RTP_session(void);
+
+LIBRTP_API void close_RTP_session(RTP_session* session);
 
 C_EXPORT_END
 
