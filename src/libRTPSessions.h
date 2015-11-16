@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _LIBRTP_SESSIONS_H_
 #define _LIBRTP_SESSIONS_H_
 
