@@ -54,7 +54,6 @@ LIBRTP_API int uninitial_RTP_library(void)
         if(NULL != global_RTP_session_context_pointer_array[i])
         {
             close_RTP_session(i);
-            libRTP_free(global_RTP_session_context_pointer_array[i]);
         }
     }
 
