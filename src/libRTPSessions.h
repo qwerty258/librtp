@@ -2,12 +2,12 @@
 #ifndef _LIBRTP_SESSIONS_H_
 #define _LIBRTP_SESSIONS_H_
 
+#include <stdint.h>
+
 #ifdef _WIN32
 #include <WinSock2.h>
 #else
 #endif // _WIN32
-
-#include <stdint.h>
 
 #ifdef _WIN32
 typedef SOCKET RTP_socket;
@@ -17,6 +17,7 @@ typedef SOCKET RTP_socket;
 typedef struct _RTP_session_context
 {
     RTP_socket sock;
+    uint32_t IP_version;
     char* local_IPv4;
     char* remote_IPv4;
     uint16_t local_port;
