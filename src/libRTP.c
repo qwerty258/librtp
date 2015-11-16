@@ -39,6 +39,13 @@ LIBRTP_API void close_RTP_session(RTP_session* session)
     libRTP_free(session);
 }
 
+LIBRTP_API int set_RTP_session_IP_version(RTP_session* session, uint32_t version)
+{
+    RTP_session_context* p_RTP_session_context = session;
+    p_RTP_session_context->IP_version = version;
+    return LIBRTP_OK;
+}
+
 LIBRTP_API int set_RTP_session_local_IPv4(RTP_session* session, char* IPv4)
 {
     RTP_session_context* p_RTP_session_context = session;
@@ -71,5 +78,29 @@ LIBRTP_API int set_RTP_session_IP_protocol(RTP_session* session, uint32_t protoc
 {
     RTP_session_context* p_RTP_session_context = session;
     p_RTP_session_context->IP_protocol = protocol;
+    return LIBRTP_OK;
+}
+
+LIBRTP_API int RTP_session_start(RTP_session* session)
+{
+    RTP_session_context* p_RTP_session_context = session;
+    if(IPPROTO_UDP == p_RTP_session_context->IP_protocol)
+    {
+        p_RTP_session_context->sock = socket(
+            p_RTP_session_context->IP_version,
+            SOCK_DGRAM,
+            p_RTP_session_context->IP_protocol);
+    }
+    if(IPPROTO_TCP == p_RTP_session_context->IP_protocol)
+    {
+        p_RTP_session_context->sock = socket(
+            p_RTP_session_context->IP_version,
+            SOCK_STREAM,
+            p_RTP_session_context->IP_protocol);
+    }
+
+
+
+
     return LIBRTP_OK;
 }
