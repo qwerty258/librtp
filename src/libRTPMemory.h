@@ -7,10 +7,6 @@ if(NULL == (pointer))                                       \
 {                                                           \
     return -2;                                              \
 }                                                           \
-else                                                        \
-{                                                           \
-    return 0;                                               \
-}
 
 #define CHECK_NULL_PARAMETER_AND_RETURN(pointer)    \
 if(NULL == (pointer))                               \
