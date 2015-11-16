@@ -1,6 +1,7 @@
 #include "libRTP.h"
 #include "libRTPSessions.h"
 #include "libRTPMemory.h"
+#include "libRTPWorkingThread.h"
 
 LIBRTP_API int initial_RTP_library(void)
 {
@@ -107,9 +108,21 @@ LIBRTP_API int RTP_session_start(RTP_session* session)
             SOCK_STREAM,
             p_RTP_session_context->IP_protocol);
     }
+    if((RTP_socket)(~0) == p_RTP_session_context->sock)
+    {
+        // to do: handle error
+    }
 
-
-
+#ifdef _WIN32
+    p_RTP_session_context->thread_handle = CreateThread(
+        NULL,
+        0,
+        receiving_thread,
+        p_RTP_session_context,
+        0,
+        &p_RTP_session_context->thread_ID);
+#else
+#endif // _WIN32
 
     return LIBRTP_OK;
 }
