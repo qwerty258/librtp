@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h" />
+    <ClInclude Include="..\..\..\src\libRTPMemory.h" />
     <ClInclude Include="..\..\..\src\libRTPSessions.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\libRTP.c" />
+    <ClCompile Include="..\..\..\src\libRTPMemory.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3E02B804-F767-4739-A202-E77757922D60}</ProjectGuid>

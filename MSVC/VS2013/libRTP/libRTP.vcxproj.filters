@@ -27,12 +27,18 @@
     <ClCompile Include="..\..\..\src\libRTP.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPMemory.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\libRTPSessions.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPMemory.h">
       <Filter>Header Files\src</Filter>
     </ClInclude>
   </ItemGroup>
