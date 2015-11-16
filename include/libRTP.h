@@ -2,6 +2,8 @@
 #ifndef _LIBRTP_H_
 #define _LIBRTP_H_
 
+#include <stdint.h>
+
 #ifdef _MSC_VER
 #ifdef LIBRTP_EXPORTS
 #define LIBRTP_API __declspec(dllexport)
@@ -24,6 +26,7 @@ typedef void* RTP_session;
 
 #define LIBRTP_OK               0;
 #define LIBRTP_UNDEFINED_ERROR  -1;
+#define LIBRTP_MEMORY_ERROR     -2;
 
 C_EXPORT_BEGIN
 
@@ -34,6 +37,19 @@ LIBRTP_API int uninitial_RTP_library(void);
 LIBRTP_API RTP_session* get_new_RTP_session(void);
 
 LIBRTP_API void close_RTP_session(RTP_session* session);
+
+LIBRTP_API int set_RTP_session_local_IPv4(RTP_session* session, char* IPv4);
+
+LIBRTP_API int set_RTP_session_local_port(RTP_session* session, uint16_t port);
+
+LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session* session, char* IPv4);
+
+LIBRTP_API int set_RTP_session_remote_port(RTP_session* session, uint16_t port);
+
+#define LIBRTP_IP_PROTOCOL_TCP  6
+#define LIBRTP_IP_PROTOCOL_UDP  17
+
+LIBRTP_API int set_RTP_session_IP_protocol(RTP_session* session, uint32_t protocol);
 
 C_EXPORT_END
 
