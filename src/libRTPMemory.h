@@ -3,13 +3,19 @@
 #define _LIBRTP_MEMORY_H_
 
 #define CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(pointer)    \
-if(NULL == pointer)                                         \
+if(NULL == (pointer))                                       \
 {                                                           \
     return -2;                                              \
 }                                                           \
 else                                                        \
 {                                                           \
     return 0;                                               \
+}
+
+#define CHECK_NULL_PARAMETER_AND_RETURN(pointer)    \
+if(NULL == (pointer))                               \
+{                                                   \
+    return -3;                                      \
 }
 
 void* libRTP_malloc(size_t size);
