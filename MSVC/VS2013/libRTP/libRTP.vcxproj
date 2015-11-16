@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\..\include\libRTP.h" />
     <ClInclude Include="..\..\..\src\libRTPConcurrentQueue.h" />
     <ClInclude Include="..\..\..\src\libRTPMemory.h" />
+    <ClInclude Include="..\..\..\src\libRTPDataDefines.h" />
     <ClInclude Include="..\..\..\src\libRTPSessions.h" />
     <ClInclude Include="..\..\..\src\libRTPWorkingThread.h" />
   </ItemGroup>

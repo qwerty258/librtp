@@ -53,5 +53,8 @@
     <ClInclude Include="..\..\..\src\libRTPConcurrentQueue.h">
       <Filter>Header Files\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPDataDefines.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
