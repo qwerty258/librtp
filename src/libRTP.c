@@ -42,7 +42,7 @@ LIBRTP_API void close_RTP_session(RTP_session* session)
 LIBRTP_API int set_RTP_session_IP_version(RTP_session* session, uint32_t version)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->IP_version = version;
     return LIBRTP_OK;
 }
@@ -51,7 +51,7 @@ LIBRTP_API int set_RTP_session_local_IPv4(RTP_session* session, char* IPv4)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->local_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_RTP_session_context->local_IPv4);
 }
@@ -59,7 +59,7 @@ LIBRTP_API int set_RTP_session_local_IPv4(RTP_session* session, char* IPv4)
 LIBRTP_API int set_RTP_session_local_port(RTP_session* session, uint16_t port)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->local_port = port;
     return LIBRTP_OK;
 }
@@ -68,7 +68,7 @@ LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session* session, char* IPv4)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->remote_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_RTP_session_context->remote_IPv4);
 }
@@ -76,7 +76,7 @@ LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session* session, char* IPv4)
 LIBRTP_API int set_RTP_session_remote_port(RTP_session* session, uint16_t port)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->remote_port = port;
     return LIBRTP_OK;
 }
@@ -84,7 +84,7 @@ LIBRTP_API int set_RTP_session_remote_port(RTP_session* session, uint16_t port)
 LIBRTP_API int set_RTP_session_IP_protocol(RTP_session* session, uint32_t protocol)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     p_RTP_session_context->IP_protocol = protocol;
     return LIBRTP_OK;
 }
@@ -92,7 +92,7 @@ LIBRTP_API int set_RTP_session_IP_protocol(RTP_session* session, uint32_t protoc
 LIBRTP_API int RTP_session_start(RTP_session* session)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
-    RTP_session_context* p_RTP_session_context = session;
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
     if(IPPROTO_UDP == p_RTP_session_context->IP_protocol)
     {
         p_RTP_session_context->sock = socket(
