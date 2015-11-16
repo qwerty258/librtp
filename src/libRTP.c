@@ -28,4 +28,5 @@ LIBRTP_API int uninitial_RTP_library(void)
     }
 #else
 #endif // _WIN32
+    return 0;
 }
