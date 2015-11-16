@@ -1,5 +1,6 @@
 #include "libRTPMemory.h"
 #include <stdlib.h>
+#include <string.h>
 
 void* libRTP_malloc(size_t size)
 {
@@ -19,4 +20,13 @@ void libRTP_free(void* pointer)
     {
         free(pointer);
     }
+}
+
+char* libRTP_strdup(char* string)
+{
+#ifdef _WIN32
+    return _strdup(string);
+#else
+    return strdup(string);
+#endif // _WIN32
 }
