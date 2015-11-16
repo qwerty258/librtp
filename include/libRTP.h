@@ -20,6 +20,8 @@
 #define C_EXPORT_END
 #endif // __cplusplus
 
+#define LIBRTP_OK 0;
+
 C_EXPORT_BEGIN
 
 LIBRTP_API int initial_RTP_library(void);
