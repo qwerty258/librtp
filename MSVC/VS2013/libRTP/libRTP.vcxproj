@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h" />
+    <ClInclude Include="..\..\..\src\libRTPConcurrentQueue.h" />
     <ClInclude Include="..\..\..\src\libRTPMemory.h" />
     <ClInclude Include="..\..\..\src\libRTPSessions.h" />
     <ClInclude Include="..\..\..\src\libRTPWorkingThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\libRTP.c" />
+    <ClCompile Include="..\..\..\src\libRTPConcurrentQueue.c" />
     <ClCompile Include="..\..\..\src\libRTPMemory.c" />
     <ClCompile Include="..\..\..\src\libRTPWorkingThread.c" />
   </ItemGroup>
