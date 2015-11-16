@@ -1,11 +1,6 @@
 #include "libRTP.h"
 #include "libRTPSessions.h"
 
-#ifdef _WIN32
-#include <WinSock2.h>
-#else
-#endif // !_WIN32
-
 LIBRTP_API int initial_RTP_library(void)
 {
 #ifdef _WIN32
@@ -16,7 +11,7 @@ LIBRTP_API int initial_RTP_library(void)
         // to do: handle error
     }
 #else
-#endif // !_WIN32
+#endif // _WIN32
     return LIBRTP_OK;
 }
 
@@ -29,6 +24,6 @@ LIBRTP_API int uninitial_RTP_library(void)
         // to do: handle error
     }
 #else
-#endif // !_WIN32
+#endif // _WIN32
     return 0;
 }

@@ -7,10 +7,10 @@
 #define LIBRTP_API __declspec(dllexport)
 #else
 #define LIBRTP_API __declspec(dllimport)
-#endif // !LIBRTP_EXPORTS
+#endif // LIBRTP_EXPORTS
 #else
 #define LIBRTP_API
-#endif // !_WIN32
+#endif // _WIN32
 
 #ifdef __cplusplus
 #define C_EXPORT_BEGIN extern "C" {
@@ -18,7 +18,7 @@
 #else
 #define C_EXPORT_BEGIN
 #define C_EXPORT_END
-#endif // !__cplusplus
+#endif // __cplusplus
 
 #define LIBRTP_OK               0;
 #define LIBRTP_UNDEFINED_ERROR  -1;
