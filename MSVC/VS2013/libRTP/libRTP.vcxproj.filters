@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\..\src\libRTPMemory.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPWorkingThread.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files\src</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\libRTPMemory.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPWorkingThread.h">
       <Filter>Header Files\src</Filter>
     </ClInclude>
   </ItemGroup>
