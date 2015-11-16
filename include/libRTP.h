@@ -20,7 +20,8 @@
 #define C_EXPORT_END
 #endif // __cplusplus
 
-#define LIBRTP_OK 0;
+#define LIBRTP_OK               0;
+#define LIBRTP_UNDEFINED_ERROR  -1;
 
 C_EXPORT_BEGIN
 
