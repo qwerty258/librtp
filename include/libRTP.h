@@ -27,6 +27,7 @@ typedef void* RTP_session;
 #define LIBRTP_OK               0;
 #define LIBRTP_UNDEFINED_ERROR  -1;
 #define LIBRTP_MEMORY_ERROR     -2;
+#define LIBRTP_BAD_PARAMETER    -3;
 
 C_EXPORT_BEGIN
 
