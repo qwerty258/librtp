@@ -3,6 +3,7 @@
 #define _LIBRTP_SESSIONS_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 #include <WinSock2.h>
@@ -17,6 +18,11 @@ typedef HANDLE RTP_thread_handl;
 
 typedef struct _RTP_session_context
 {
+    // session status begin
+    bool session_started;
+    // session status end
+
+    // session socket begin
     RTP_socket sock;
     uint32_t IP_version;
     char* local_IPv4;
@@ -26,8 +32,12 @@ typedef struct _RTP_session_context
     uint32_t IP_protocol;
     struct sockaddr_in local_sockaddr;
     struct sockaddr_in remote_sockaddr;
-    RTP_thread_handl thread_handle;
-    uint32_t thread_ID;
+    // session socket end
+
+    // session receiving begin
+    RTP_thread_handl receiving_thread_handle;
+    uint32_t receiving_thread_ID;
+    // session receiving end
 }RTP_session_context;
 
 #endif // !_LIBRTP_SESSIONS_H_

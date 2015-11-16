@@ -3,6 +3,12 @@
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
 
+#define CHECK_SESSION_STARTED_NO_SET(bool_status)   \
+if(bool_status)                                     \
+{                                                   \
+    return LIBRTP_SESSION_ALREADY_STARTED;          \
+}
+
 LIBRTP_API int initial_RTP_library(void)
 {
 #ifdef _WIN32
@@ -44,6 +50,7 @@ LIBRTP_API int set_RTP_session_IP_version(RTP_session* session, uint32_t version
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->IP_version = version;
     return LIBRTP_OK;
 }
@@ -53,6 +60,7 @@ LIBRTP_API int set_RTP_session_local_IPv4(RTP_session* session, char* IPv4)
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->local_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_RTP_session_context->local_IPv4);
 }
@@ -61,6 +69,7 @@ LIBRTP_API int set_RTP_session_local_port(RTP_session* session, uint16_t port)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->local_port = port;
     return LIBRTP_OK;
 }
@@ -70,6 +79,7 @@ LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session* session, char* IPv4)
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->remote_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_RTP_session_context->remote_IPv4);
 }
@@ -78,6 +88,7 @@ LIBRTP_API int set_RTP_session_remote_port(RTP_session* session, uint16_t port)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->remote_port = port;
     return LIBRTP_OK;
 }
@@ -86,6 +97,7 @@ LIBRTP_API int set_RTP_session_IP_protocol(RTP_session* session, uint32_t protoc
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     p_RTP_session_context->IP_protocol = protocol;
     return LIBRTP_OK;
 }
@@ -94,6 +106,7 @@ LIBRTP_API int RTP_session_start(RTP_session* session)
 {
     CHECK_NULL_PARAMETER_AND_RETURN(session);
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)session;
+    CHECK_SESSION_STARTED_NO_SET(p_RTP_session_context->session_started);
     if(IPPROTO_UDP == p_RTP_session_context->IP_protocol)
     {
         p_RTP_session_context->sock = socket(
@@ -114,13 +127,13 @@ LIBRTP_API int RTP_session_start(RTP_session* session)
     }
 
 #ifdef _WIN32
-    p_RTP_session_context->thread_handle = CreateThread(
+    p_RTP_session_context->receiving_thread_handle = CreateThread(
         NULL,
         0,
         receiving_thread,
         p_RTP_session_context,
         0,
-        &p_RTP_session_context->thread_ID);
+        &p_RTP_session_context->receiving_thread_ID);
 #else
 #endif // _WIN32
 
