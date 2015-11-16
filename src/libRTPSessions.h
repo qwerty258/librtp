@@ -2,6 +2,7 @@
 #ifndef _LIBRTP_SESSIONS_H_
 #define _LIBRTP_SESSIONS_H_
 
+#include "libRTPConcurrentQueue.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -13,6 +14,7 @@
 #ifdef _WIN32
 typedef SOCKET RTP_socket;
 typedef HANDLE RTP_thread_handl;
+#define close closesocket
 #else
 #endif // _WIN32
 
@@ -37,6 +39,7 @@ typedef struct _RTP_session_context
     // session receiving begin
     RTP_thread_handl receiving_thread_handle;
     uint32_t receiving_thread_ID;
+    concurrent_queue_handle raw_socket_data_queue_handle;
     // session receiving end
 }RTP_session_context;
 
