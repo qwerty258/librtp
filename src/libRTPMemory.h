@@ -2,6 +2,8 @@
 #ifndef _LIBRTP_MEMORY_H_
 #define _LIBRTP_MEMORY_H_
 
+#include <crtdefs.h>
+
 #define CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(pointer)    \
 if(NULL == (pointer))                                       \
 {                                                           \
