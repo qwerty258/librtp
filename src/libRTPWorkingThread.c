@@ -2,6 +2,7 @@
 #include "libRTPDataDefines.h"
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
+#include <stdio.h>
 
 uint32_t WINAPI RTP_receiving_thread(void* parameter)
 {
@@ -56,6 +57,18 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
         // to do
     }
 
+    HANDLE RTCP_thread_handle = CreateThread(NULL, 0, RTCP_thread, parameter, 0, &result);
+    if(NULL == RTCP_thread_handle)
+    {
+        // to do
+    }
+
+    HANDLE RTP_package_consuming_thread_handle = CreateThread(NULL, 0, RTP_package_consuming_thread, parameter, 0, &result);
+    if(NULL == RTP_package_consuming_thread_handle)
+    {
+        // to do
+    }
+
     while(p_RTP_session_context->session_started)
     {
         p_raw_socket_data = libRTP_calloc(sizeof(raw_socket_data));
@@ -77,6 +90,9 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
         }
     }
 
+    WaitForSingleObject(RTCP_thread_handle, INFINITE);
+    WaitForSingleObject(RTP_package_consuming_thread, INFINITE);
+
     free_concurrent_queue(p_RTP_session_context->raw_socket_data_queue_handle);
 
     result = close(sock);
@@ -88,3 +104,77 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     return 0;
 }
 
+uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
+{
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+    char* raw_data = NULL;
+    while(p_RTP_session_context->session_started)
+    {
+        raw_data = concurrent_pophead(p_RTP_session_context->raw_socket_data_queue_handle);
+        if(NULL == raw_data)
+        {
+            Sleep(10);
+        }
+    }
+    return 0;
+}
+
+uint32_t WINAPI RTCP_thread(void* parameter)
+{
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+    struct sockaddr_in local_RTCP_addr;
+    int result = 0;
+    uint8_t* buffer = libRTP_calloc(2000);
+    memset(&local_RTCP_addr, 0x0, sizeof(struct sockaddr_in));
+
+    local_RTCP_addr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->local_IPv4);
+    local_RTCP_addr.sin_family = p_RTP_session_context->IP_version;
+    local_RTCP_addr.sin_port = htons(p_RTP_session_context->local_port);
+
+    RTP_socket RTCP_socket;
+    if(IPPROTO_UDP == p_RTP_session_context->IP_protocol)
+    {
+        RTCP_socket = socket(
+            p_RTP_session_context->IP_version,
+            SOCK_DGRAM,
+            p_RTP_session_context->IP_protocol);
+    }
+    if(IPPROTO_TCP == p_RTP_session_context->IP_protocol)
+    {
+        RTCP_socket = socket(
+            p_RTP_session_context->IP_version,
+            SOCK_STREAM,
+            p_RTP_session_context->IP_protocol);
+    }
+    if((RTP_socket)(~0) == RTCP_socket)
+    {
+        // to do
+    }
+
+    result = bind(RTCP_socket, (struct sockaddr*)&local_RTCP_addr, sizeof(struct sockaddr_in));
+    if(0 != result)
+    {
+        // to do
+    }
+
+    size_t write_count = 0;
+    char filename[MAX_PATH];
+
+    while(p_RTP_session_context->session_started)
+    {
+        result = recv(RTCP_socket, buffer, 2000, 0);
+        if(0 < result)
+        {
+            for(write_count = 0; write_count < 5; write_count++)
+            {
+                _snprintf(filename, "D:\\RTCP%u.data", write_count);
+                FILE* pFile = fopen(filename, "wb");
+                fwrite(buffer, result, 1, pFile);
+                fclose(pFile);
+            }
+        }
+    }
+
+    libRTP_free(buffer);
+    return 0;
+}
