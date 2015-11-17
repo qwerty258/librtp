@@ -218,6 +218,8 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
         // to do: handle error
     }
 
+    global_RTP_session_context_pointer_array[handle]->session_started = true;
+
 #ifdef _WIN32
     global_RTP_session_context_pointer_array[handle]->receiving_thread_handle = CreateThread(
         NULL,
