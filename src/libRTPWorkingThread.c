@@ -7,11 +7,26 @@
 uint32_t WINAPI RTP_receiving_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
-    p_RTP_session_context->local_sockaddr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->local_IPv4);
+    if(NULL == p_RTP_session_context->local_IPv4)
+    {
+        p_RTP_session_context->local_sockaddr.sin_addr.S_un.S_addr = 0;
+    }
+    else
+    {
+        p_RTP_session_context->local_sockaddr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->local_IPv4);
+
+    }
     p_RTP_session_context->local_sockaddr.sin_family = p_RTP_session_context->IP_version;
     p_RTP_session_context->local_sockaddr.sin_port = htons(p_RTP_session_context->local_port);
 
-    p_RTP_session_context->remote_sockaddr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->remote_IPv4);
+    if(NULL==p_RTP_session_context->remote_IPv4)
+    {
+        p_RTP_session_context->remote_sockaddr.sin_addr.S_un.S_addr = 0;
+    }
+    else
+    {
+        p_RTP_session_context->remote_sockaddr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->remote_IPv4);
+    }
     p_RTP_session_context->remote_sockaddr.sin_family = p_RTP_session_context->IP_version;
     p_RTP_session_context->remote_sockaddr.sin_port = htons(p_RTP_session_context->local_port);
 
@@ -91,7 +106,10 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     }
 
     WaitForSingleObject(RTCP_thread_handle, INFINITE);
-    WaitForSingleObject(RTP_package_consuming_thread, INFINITE);
+    CloseHandle(RTCP_thread_handle);
+
+    WaitForSingleObject(RTP_package_consuming_thread_handle, INFINITE);
+    CloseHandle(RTP_package_consuming_thread_handle);
 
     free_concurrent_queue(p_RTP_session_context->raw_socket_data_queue_handle);
 
@@ -115,6 +133,16 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         {
             Sleep(10);
         }
+        else
+        {
+            for(size_t i = 0; i < 10; i++)
+            {
+                printf("%02X", raw_data[i]);
+            }
+            printf("\n");
+
+            libRTP_free(raw_data);
+        }
     }
     return 0;
 }
@@ -129,7 +157,7 @@ uint32_t WINAPI RTCP_thread(void* parameter)
 
     local_RTCP_addr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->local_IPv4);
     local_RTCP_addr.sin_family = p_RTP_session_context->IP_version;
-    local_RTCP_addr.sin_port = htons(p_RTP_session_context->local_port);
+    local_RTCP_addr.sin_port = htons(p_RTP_session_context->local_port + 1);
 
     RTP_socket RTCP_socket;
     if(IPPROTO_UDP == p_RTP_session_context->IP_protocol)
@@ -157,6 +185,18 @@ uint32_t WINAPI RTCP_thread(void* parameter)
         // to do
     }
 
+    uint32_t timeout = 1000;
+    result = setsockopt(
+        p_RTP_session_context->sock,
+        SOL_SOCKET,
+        SO_RCVTIMEO,
+        (const char*)&timeout,
+        sizeof(uint32_t));
+    if(0 != result)
+    {
+        // to do
+    }
+
     size_t write_count = 0;
     char filename[MAX_PATH];
 
@@ -167,11 +207,17 @@ uint32_t WINAPI RTCP_thread(void* parameter)
         {
             for(write_count = 0; write_count < 5; write_count++)
             {
-                _snprintf(filename, "D:\\RTCP%u.data", write_count);
+                _snprintf(filename, MAX_PATH, "D:\\RTCPdata%u", write_count);
                 FILE* pFile = fopen(filename, "wb");
                 fwrite(buffer, result, 1, pFile);
                 fclose(pFile);
             }
+
+            for(size_t i = 0; i < 10; i++)
+            {
+                printf("%02X", buffer[i]);
+            }
+            printf("\n");
         }
     }
 
