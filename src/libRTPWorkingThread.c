@@ -3,7 +3,7 @@
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
 
-uint32_t WINAPI receiving_thread(void* parameter)
+uint32_t WINAPI RTP_receiving_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
     p_RTP_session_context->local_sockaddr.sin_addr.S_un.S_addr = inet_addr(p_RTP_session_context->local_IPv4);
