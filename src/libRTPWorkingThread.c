@@ -32,7 +32,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
         p_raw_socket_data = libRTP_calloc(sizeof(raw_socket_data));
         if(NULL != p_raw_socket_data)
         {
-            result = recv(p_RTP_session_context->sock_for_RTP, p_raw_socket_data->buffer, 2000, 0);
+            result = recv(p_RTP_session_context->sock_for_RTP, p_raw_socket_data->data, 2000, 0);
             if(0 < result)
             {
                 p_raw_socket_data->size = result;
@@ -74,7 +74,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
 uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
-    char* raw_data = NULL;
+    raw_socket_data* raw_data = NULL;
     while(p_RTP_session_context->session_started)
     {
         raw_data = concurrent_pophead(p_RTP_session_context->raw_socket_data_queue_handle);
@@ -86,7 +86,7 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         {
             for(size_t i = 0; i < 10; i++)
             {
-                printf("%02X", raw_data[i]);
+                printf("%02X", raw_data->data[i]);
             }
             printf("\n");
 
@@ -108,6 +108,7 @@ uint32_t WINAPI RTCP_thread(void* parameter)
 
     while(p_RTP_session_context->session_started)
     {
+        printf("RTCP_thread\n");
         result = recv(p_RTP_session_context->sock_for_RTCP, buffer, 2000, 0);
         if(0 < result)
         {

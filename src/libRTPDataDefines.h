@@ -6,7 +6,7 @@
 
 typedef struct _raw_socket_data
 {
-    uint8_t buffer[2000];
+    uint8_t data[2000];
     uint32_t size;
 }raw_socket_data;
 
