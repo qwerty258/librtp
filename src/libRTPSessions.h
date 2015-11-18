@@ -44,7 +44,7 @@ typedef struct _RTP_session_context
     // session receiving begin
     RTP_thread_handle RTP_receiving_thread_handle;
     uint32_t receiving_thread_ID;
-    concurrent_queue_handle raw_socket_data_queue_handle;
+    concurrent_queue_handle concurrent_queue_handle_for_raw_socket_data;
     // session receiving end
 }RTP_session_context;
 
