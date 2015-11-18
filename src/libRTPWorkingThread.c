@@ -72,8 +72,9 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
             {
                 printf("%02X", raw_data->payload_start_position[i]);
             }
-            printf("    ");
-            printf("timestamp: %u   ", raw_data->timestamp);
+            printf("  ");
+            printf("size: %u  ", raw_data->payload_size);
+            printf("timestamp: %u  ", raw_data->timestamp);
             printf("seq: %u\n", raw_data->sequence_number);
 
             libRTP_free(raw_data);

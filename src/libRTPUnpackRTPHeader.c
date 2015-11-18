@@ -60,6 +60,7 @@ void unpack_RTP_header(RTP_data* p_RTP_data)
         }
 
         p_RTP_data->payload_start_position = current_position;
+        p_RTP_data->payload_size = p_RTP_data->socket_received_size - (current_position - p_RTP_data->data);
     }
     else if(0 == endian_test.b) // big
     {
@@ -86,5 +87,6 @@ void unpack_RTP_header(RTP_data* p_RTP_data)
         }
 
         p_RTP_data->payload_start_position = current_position;
+        p_RTP_data->payload_size = p_RTP_data->socket_received_size - (current_position - p_RTP_data->data);
     }
 }
