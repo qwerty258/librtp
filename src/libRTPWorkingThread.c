@@ -7,6 +7,10 @@
 uint32_t WINAPI RTP_receiving_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+    if(NULL == p_RTP_session_context->raw_socket_data_queue_handle)
+    {
+        return -1;
+    }
     if(NULL == p_RTP_session_context->local_IPv4)
     {
         p_RTP_session_context->local_sockaddr.sin_addr.S_un.S_addr = 0;
@@ -19,7 +23,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     p_RTP_session_context->local_sockaddr.sin_family = p_RTP_session_context->IP_version;
     p_RTP_session_context->local_sockaddr.sin_port = htons(p_RTP_session_context->local_port);
 
-    if(NULL==p_RTP_session_context->remote_IPv4)
+    if(NULL == p_RTP_session_context->remote_IPv4)
     {
         p_RTP_session_context->remote_sockaddr.sin_addr.S_un.S_addr = 0;
     }
@@ -66,11 +70,6 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     }
 
     raw_socket_data* p_raw_socket_data = NULL;
-    p_RTP_session_context->raw_socket_data_queue_handle = get_concurrent_queue();
-    if(NULL == p_RTP_session_context->raw_socket_data_queue_handle)
-    {
-        // to do
-    }
 
     HANDLE RTCP_thread_handle = CreateThread(NULL, 0, RTCP_thread, parameter, 0, &result);
     if(NULL == RTCP_thread_handle)
