@@ -13,7 +13,7 @@
 
 #ifdef _WIN32
 typedef SOCKET RTP_socket;
-typedef HANDLE RTP_thread_handl;
+typedef HANDLE RTP_thread_handle;
 #define close closesocket
 #else
 #endif // _WIN32
@@ -25,19 +25,24 @@ typedef struct _RTP_session_context
     // session status end
 
     // session socket begin
-    RTP_socket sock;
     uint32_t IP_version;
+    uint32_t IP_protocol;
     char* local_IPv4;
+    char* local_IPV6;
     char* remote_IPv4;
+    char* remote_IPv6;
     uint16_t local_port;
     uint16_t remote_port;
-    uint32_t IP_protocol;
-    struct sockaddr_in local_sockaddr;
-    struct sockaddr_in remote_sockaddr;
+    RTP_socket sock_for_RTP;
+    RTP_socket sock_for_RTCP;
+    struct sockaddr_in local_sockaddr_v4_for_RTP; // to do: IPv6 addr for RTP
+    struct sockaddr_in remote_sockaddr_v4_for_RTP; 
+    struct sockaddr_in local_sockaddr_v4_for_RTCP; // to do: IPv6 addr for RTCP
+    struct sockaddr_in remote_sockaddr_v4_for_RTCP;
     // session socket end
 
     // session receiving begin
-    RTP_thread_handl receiving_thread_handle;
+    RTP_thread_handle RTP_receiving_thread_handle;
     uint32_t receiving_thread_ID;
     concurrent_queue_handle raw_socket_data_queue_handle;
     // session receiving end
