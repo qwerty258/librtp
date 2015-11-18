@@ -16,7 +16,7 @@ typedef struct _concurrent_queue_context
     CRITICAL_SECTION critical_section;
 }concurrent_queue_context;
 
-concurrent_queue_handle get_concurrent_queue(void)
+concurrent_queue_handle concurrent_queue_get_handle(void)
 {
     concurrent_queue_context* queue_context = libRTP_calloc(sizeof(concurrent_queue_context));
     if(NULL != queue_context)
@@ -28,7 +28,7 @@ concurrent_queue_handle get_concurrent_queue(void)
     return queue_context;
 }
 
-bool concurrent_pushback(concurrent_queue_handle handle, void* element)
+bool concurrent_queue_pushback(concurrent_queue_handle handle, void* element)
 {
     if(NULL == handle)
     {
@@ -75,7 +75,7 @@ bool concurrent_pushback(concurrent_queue_handle handle, void* element)
     }
 }
 
-void* concurrent_pophead(concurrent_queue_handle handle)
+void* concurrent_queue_pophead(concurrent_queue_handle handle)
 {
     if(NULL == handle)
     {
@@ -117,14 +117,14 @@ void* concurrent_pophead(concurrent_queue_handle handle)
     }
 }
 
-void free_concurrent_queue(concurrent_queue_handle* handle)
+void concurrent_queue_free(concurrent_queue_handle* handle)
 {
     if(NULL == handle || NULL == (*handle))
     {
         return;
     }
     concurrent_queue_context* queue_context = (concurrent_queue_context*)(*handle);
-    while(NULL != concurrent_pophead(queue_context))
+    while(NULL != concurrent_queue_pophead(queue_context))
     {
         continue;
     }

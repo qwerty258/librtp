@@ -36,7 +36,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
             if(0 < result)
             {
                 p_raw_socket_data->size = result;
-                if(!concurrent_pushback(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data, p_raw_socket_data))
+                if(!concurrent_queue_pushback(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data, p_raw_socket_data))
                 {
                     libRTP_free(p_raw_socket_data);
                 }
@@ -51,7 +51,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     // pop out all the data and free
     while(true)
     {
-        p_raw_socket_data = concurrent_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
+        p_raw_socket_data = concurrent_queue_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
         if(NULL == p_raw_socket_data)
         {
             break;
@@ -77,7 +77,7 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
     raw_socket_data* raw_data = NULL;
     while(p_RTP_session_context->session_started)
     {
-        raw_data = concurrent_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
+        raw_data = concurrent_queue_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
         if(NULL == raw_data)
         {
             Sleep(10);
