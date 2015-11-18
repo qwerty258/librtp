@@ -2,6 +2,7 @@
 #include "libRTPSessions.h"
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
+#include "libRTPSocket.h"
 
 #define CHECK_SESSION_STARTED_NO_SET(bool_status)   \
 if(bool_status)                                     \
@@ -81,7 +82,6 @@ LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle)
         {
             global_RTP_session_context_pointer_array[i] = libRTP_calloc(sizeof(RTP_session_context));
             CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[i]);
-            global_RTP_session_context_pointer_array[i]->raw_socket_data_queue_handle = get_concurrent_queue();
             *p_handle = i;
             break;
         }
@@ -103,19 +103,24 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
     {
         return result;
     }
-    global_RTP_session_context_pointer_array[handle]->session_started = false;
+    if(global_RTP_session_context_pointer_array[handle]->session_started)
+    {
+        global_RTP_session_context_pointer_array[handle]->session_started = false;
 
 #ifdef _WIN32
-    WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->receiving_thread_handle, INFINITE);
-    CloseHandle(global_RTP_session_context_pointer_array[handle]->receiving_thread_handle);
+        WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle, INFINITE);
+        CloseHandle(global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle);
 #endif // _WIN32
 
-    free_concurrent_queue(global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
+        result = close_sockets(global_RTP_session_context_pointer_array[handle]);
+    }
+
+    free_concurrent_queue(&global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
 
     libRTP_free(global_RTP_session_context_pointer_array[handle]);
     global_RTP_session_context_pointer_array[handle] = NULL;
 
-    return LIBRTP_OK;
+    return result;
 }
 
 LIBRTP_API int set_RTP_session_IP_version(RTP_session_handle handle, uint32_t version)
@@ -202,35 +207,36 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
         return result;
     }
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
-    if(IPPROTO_UDP == global_RTP_session_context_pointer_array[handle]->IP_protocol)
+
+    global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle = get_concurrent_queue();
+    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
+
+    result = initialize_sockets(global_RTP_session_context_pointer_array[handle]);
+    if(LIBRTP_OK != result)
     {
-        global_RTP_session_context_pointer_array[handle]->sock = socket(
-            global_RTP_session_context_pointer_array[handle]->IP_version,
-            SOCK_DGRAM,
-            global_RTP_session_context_pointer_array[handle]->IP_protocol);
-    }
-    if(IPPROTO_TCP == global_RTP_session_context_pointer_array[handle]->IP_protocol)
-    {
-        global_RTP_session_context_pointer_array[handle]->sock = socket(
-            global_RTP_session_context_pointer_array[handle]->IP_version,
-            SOCK_STREAM,
-            global_RTP_session_context_pointer_array[handle]->IP_protocol);
-    }
-    if((RTP_socket)(~0) == global_RTP_session_context_pointer_array[handle]->sock)
-    {
-        // to do: handle error
+        free_concurrent_queue(&global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
+        close_sockets(global_RTP_session_context_pointer_array[handle]);
+        return result;
     }
 
     global_RTP_session_context_pointer_array[handle]->session_started = true;
 
 #ifdef _WIN32
-    global_RTP_session_context_pointer_array[handle]->receiving_thread_handle = CreateThread(
+    global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle = CreateThread(
         NULL,
         0,
         RTP_receiving_thread,
         global_RTP_session_context_pointer_array[handle],
         0,
         &global_RTP_session_context_pointer_array[handle]->receiving_thread_ID);
+
+    if(NULL == global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle)
+    {
+        global_RTP_session_context_pointer_array[handle]->session_started = false;
+        free_concurrent_queue(&global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
+        close_sockets(global_RTP_session_context_pointer_array[handle]);
+        return LIBRTP_THREAD_CREATE_ERROR;
+    }
 #else
 #endif // _WIN32
 
