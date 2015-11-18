@@ -36,14 +36,15 @@ typedef struct _RTP_session_context
     RTP_socket sock_for_RTP;
     RTP_socket sock_for_RTCP;
     struct sockaddr_in local_sockaddr_v4_for_RTP; // to do: IPv6 addr for RTP
-    struct sockaddr_in remote_sockaddr_v4_for_RTP; 
+    struct sockaddr_in remote_sockaddr_v4_for_RTP;
     struct sockaddr_in local_sockaddr_v4_for_RTCP; // to do: IPv6 addr for RTCP
     struct sockaddr_in remote_sockaddr_v4_for_RTCP;
     // session socket end
 
     // session receiving begin
     RTP_thread_handle RTP_receiving_thread_handle;
-    uint32_t receiving_thread_ID;
+    RTP_thread_handle RTCP_thread_handle;
+    RTP_thread_handle RTP_package_consuming_thread_handle;
     concurrent_queue_handle concurrent_queue_handle_for_raw_socket_data;
     // session receiving end
 }RTP_session_context;
