@@ -110,6 +110,12 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 #ifdef _WIN32
         WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle, INFINITE);
         CloseHandle(global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle);
+
+        WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->RTCP_thread_handle, INFINITE);
+        CloseHandle(global_RTP_session_context_pointer_array[handle]->RTCP_thread_handle);
+
+        WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->RTP_package_consuming_thread_handle, INFINITE);
+        CloseHandle(global_RTP_session_context_pointer_array[handle]->RTP_package_consuming_thread_handle);
 #endif // _WIN32
 
         result = close_sockets(global_RTP_session_context_pointer_array[handle]);
@@ -228,9 +234,26 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
         RTP_receiving_thread,
         global_RTP_session_context_pointer_array[handle],
         0,
-        &global_RTP_session_context_pointer_array[handle]->receiving_thread_ID);
+        &result);
 
-    if(NULL == global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle)
+    global_RTP_session_context_pointer_array[handle]->RTCP_thread_handle = CreateThread(
+        NULL,
+        0,
+        RTCP_thread,
+        global_RTP_session_context_pointer_array[handle],
+        0,
+        &result);
+
+    global_RTP_session_context_pointer_array[handle]->RTP_package_consuming_thread_handle = CreateThread(
+        NULL,
+        0,
+        RTP_package_consuming_thread,
+        global_RTP_session_context_pointer_array[handle],
+        0,
+        &result);
+    if(NULL == global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle ||
+       NULL == global_RTP_session_context_pointer_array[handle]->RTCP_thread_handle ||
+       NULL == global_RTP_session_context_pointer_array[handle]->RTP_package_consuming_thread_handle)
     {
         global_RTP_session_context_pointer_array[handle]->session_started = false;
         concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
