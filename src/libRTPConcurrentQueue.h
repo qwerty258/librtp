@@ -12,6 +12,6 @@ bool concurrent_pushback(concurrent_queue_handle handle, void* element);
 
 void* concurrent_pophead(concurrent_queue_handle handle);
 
-void free_concurrent_queue(concurrent_queue_handle handle);
+void free_concurrent_queue(concurrent_queue_handle* handle);
 
 #endif // !_LIBRTP_CONCURRENT_QUEUE_H_

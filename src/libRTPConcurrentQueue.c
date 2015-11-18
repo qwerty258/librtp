@@ -117,17 +117,18 @@ void* concurrent_pophead(concurrent_queue_handle handle)
     }
 }
 
-void free_concurrent_queue(concurrent_queue_handle handle)
+void free_concurrent_queue(concurrent_queue_handle* handle)
 {
-    if(NULL == handle)
+    if(NULL == handle || NULL == (*handle))
     {
         return;
     }
-    concurrent_queue_context* queue_context = (concurrent_queue_context*)handle;
-    while(NULL != concurrent_pophead(handle))
+    concurrent_queue_context* queue_context = (concurrent_queue_context*)(*handle);
+    while(NULL != concurrent_pophead(queue_context))
     {
         continue;
     }
     DeleteCriticalSection(&queue_context->critical_section);
-    libRTP_free(handle);
+    libRTP_free(queue_context);
+    *handle = NULL;
 }
