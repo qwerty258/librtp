@@ -2,6 +2,7 @@
 #include "libRTPDataDefines.h"
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
+#include "libRTPUnpackRTPHeader.h"
 #include <stdio.h>
 
 uint32_t WINAPI RTP_receiving_thread(void* parameter)
@@ -66,11 +67,14 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         }
         else
         {
-            for(size_t i = 0; i < 10; i++)
+            unpack_RTP_header(raw_data);
+            for(size_t i = 0; i < 4; i++)
             {
-                printf("%02X", raw_data->data[i]);
+                printf("%02X", raw_data->payload_start_position[i]);
             }
-            printf("\n");
+            printf("    ");
+            printf("timestamp: %u   ", raw_data->timestamp);
+            printf("seq: %u\n", raw_data->sequence_number);
 
             libRTP_free(raw_data);
             raw_data = NULL;
