@@ -110,6 +110,8 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
     CloseHandle(global_RTP_session_context_pointer_array[handle]->receiving_thread_handle);
 #endif // _WIN32
 
+    free_concurrent_queue(global_RTP_session_context_pointer_array[handle]->raw_socket_data_queue_handle);
+
     libRTP_free(global_RTP_session_context_pointer_array[handle]);
     global_RTP_session_context_pointer_array[handle] = NULL;
 

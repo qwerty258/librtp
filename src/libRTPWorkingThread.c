@@ -110,8 +110,6 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     WaitForSingleObject(RTP_package_consuming_thread_handle, INFINITE);
     CloseHandle(RTP_package_consuming_thread_handle);
 
-    free_concurrent_queue(p_RTP_session_context->raw_socket_data_queue_handle);
-
     result = close(sock);
     if(0 != result)
     {
