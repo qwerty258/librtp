@@ -81,6 +81,7 @@ LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle)
         {
             global_RTP_session_context_pointer_array[i] = libRTP_calloc(sizeof(RTP_session_context));
             CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[i]);
+            global_RTP_session_context_pointer_array[i]->raw_socket_data_queue_handle = get_concurrent_queue();
             *p_handle = i;
             break;
         }
