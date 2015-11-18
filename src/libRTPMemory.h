@@ -3,17 +3,18 @@
 #define _LIBRTP_MEMORY_H_
 
 #include <crtdefs.h>
+#include "libRTPErrorDefine.h"
 
 #define CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(pointer)    \
 if(NULL == (pointer))                                       \
 {                                                           \
-    return -2;                                              \
+    return LIBRTP_MEMORY_ERROR;                             \
 }                                                           \
 
 #define CHECK_NULL_PARAMETER_AND_RETURN(pointer)    \
 if(NULL == (pointer))                               \
 {                                                   \
-    return -3;                                      \
+    return LIBRTP_BAD_PARAMETER;                    \
 }
 
 void* libRTP_malloc(size_t size);
