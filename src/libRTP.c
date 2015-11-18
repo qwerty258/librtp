@@ -12,6 +12,7 @@ if(bool_status)                                     \
 
 RTP_session_context** global_RTP_session_context_pointer_array;
 size_t global_RTP_max_session_number;
+payload_processor_context* global_payload_processor_table;
 
 int check_handle(size_t handle)
 {
@@ -43,8 +44,10 @@ LIBRTP_API int initial_RTP_library(size_t max_session_number)
 
     global_RTP_max_session_number = max_session_number;
     global_RTP_session_context_pointer_array = libRTP_calloc(global_RTP_max_session_number * sizeof(RTP_session_context*));
-
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array);
+
+    global_payload_processor_table = get_payload_processor_table();
+    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_payload_processor_table);
     return LIBRTP_OK;
 }
 
@@ -59,6 +62,7 @@ LIBRTP_API int uninitial_RTP_library(void)
     }
 
     libRTP_free(global_RTP_session_context_pointer_array);
+    libRTP_free(global_payload_processor_table);
 
 #ifdef _WIN32
     int result = WSACleanup();
@@ -214,6 +218,16 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
     }
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
 
+    for(size_t i = 0;; i++)
+    {
+        if(MAKEFOURCC('H', '2', '6', '4') == global_payload_processor_table[i].payload_type ||
+           0 == global_payload_processor_table[i].payload_type)
+        {
+            global_RTP_session_context_pointer_array[handle]->p_payload_processer_function = global_payload_processor_table[i].p_function;
+            break;
+        }
+    }
+
     global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data = concurrent_queue_get_handle();
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
 
@@ -264,4 +278,4 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 #endif // _WIN32
 
     return LIBRTP_OK;
-}
+    }

@@ -11,6 +11,8 @@
 #else
 #endif // _WIN32
 
+#include "libRTPPayloadProcessors.h"
+
 #ifdef _WIN32
 typedef SOCKET RTP_socket;
 typedef HANDLE RTP_thread_handle;
@@ -47,6 +49,8 @@ typedef struct _RTP_session_context
     RTP_thread_handle RTP_package_consuming_thread_handle;
     concurrent_queue_handle concurrent_queue_handle_for_raw_socket_data;
     // session receiving end
+
+    payload_processer_function p_payload_processer_function;
 }RTP_session_context;
 
 #endif // !_LIBRTP_SESSIONS_H_
