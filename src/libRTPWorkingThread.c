@@ -68,7 +68,8 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         else
         {
             unpack_RTP_header(raw_data);
-            for(size_t i = 0; i < 4; i++)
+            p_RTP_session_context->p_payload_processer_function(raw_data);
+            for(size_t i = 0; i < 8; i++)
             {
                 printf("%02X", raw_data->payload_start_position[i]);
             }
