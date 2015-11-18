@@ -26,6 +26,7 @@
     <ClInclude Include="..\..\..\src\libRTPDataDefines.h" />
     <ClInclude Include="..\..\..\src\libRTPSessions.h" />
     <ClInclude Include="..\..\..\src\libRTPSocket.h" />
+    <ClInclude Include="..\..\..\src\libRTPUnpackRTPHeader.h" />
     <ClInclude Include="..\..\..\src\libRTPWorkingThread.h" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,7 @@
     <ClCompile Include="..\..\..\src\libRTPConcurrentQueue.c" />
     <ClCompile Include="..\..\..\src\libRTPMemory.c" />
     <ClCompile Include="..\..\..\src\libRTPSocket.c" />
+    <ClCompile Include="..\..\..\src\libRTPUnpackRTPHeader.c" />
     <ClCompile Include="..\..\..\src\libRTPWorkingThread.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
