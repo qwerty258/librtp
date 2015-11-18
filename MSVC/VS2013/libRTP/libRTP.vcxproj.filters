@@ -42,6 +42,12 @@
     <ClCompile Include="..\..\..\src\libRTPUnpackRTPHeader.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPPayloadProcessors.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPH264PayloadProcessor.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
@@ -69,6 +75,12 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\libRTPUnpackRTPHeader.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPPayloadProcessors.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPH264PayloadProcessor.h">
       <Filter>Header Files\src</Filter>
     </ClInclude>
   </ItemGroup>
