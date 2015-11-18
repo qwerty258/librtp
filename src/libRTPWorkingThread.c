@@ -15,18 +15,6 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
 
     RTP_data* p_raw_socket_data = NULL;
 
-    HANDLE RTCP_thread_handle = CreateThread(NULL, 0, RTCP_thread, parameter, 0, &result);
-    if(NULL == RTCP_thread_handle)
-    {
-        // to do
-    }
-
-    HANDLE RTP_package_consuming_thread_handle = CreateThread(NULL, 0, RTP_package_consuming_thread, parameter, 0, &result);
-    if(NULL == RTP_package_consuming_thread_handle)
-    {
-        // to do
-    }
-
     while(p_RTP_session_context->session_started)
     {
         p_raw_socket_data = libRTP_calloc(sizeof(RTP_data));
@@ -61,12 +49,6 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
             libRTP_free(p_raw_socket_data);
         }
     }
-
-    WaitForSingleObject(RTCP_thread_handle, INFINITE);
-    CloseHandle(RTCP_thread_handle);
-
-    WaitForSingleObject(RTP_package_consuming_thread_handle, INFINITE);
-    CloseHandle(RTP_package_consuming_thread_handle);
 
     return 0;
 }
