@@ -83,10 +83,12 @@ typedef union _RTP_header_byte_1
     RTP_header_byte_1_big_endian    big_endian;
 }RTP_header_byte_1;
 
+#define RTP_DATA_BUFFER_SIZE 2048
+
 typedef struct _RTP_data
 {
-    uint8_t             data[2048];
-    uint32_t            socket_received_size;
+    uint8_t             data[RTP_DATA_BUFFER_SIZE];
+    int32_t             socket_received_size;
     uint32_t            payload_size;
     uint8_t*            payload_start_position;
     RTP_header_byte_0   RTP_package_byte_0;
