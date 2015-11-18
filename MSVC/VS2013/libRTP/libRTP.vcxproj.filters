@@ -36,6 +36,9 @@
     <ClCompile Include="..\..\..\src\libRTPConcurrentQueue.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPSocket.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
@@ -55,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\libRTPDataDefines.h">
       <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPSocket.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\libRTPErrorDefine.h">
+      <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

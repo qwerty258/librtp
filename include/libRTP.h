@@ -2,8 +2,6 @@
 #ifndef _LIBRTP_H_
 #define _LIBRTP_H_
 
-#include <stdint.h>
-
 #ifdef _MSC_VER
 #ifdef LIBRTP_EXPORTS
 #define LIBRTP_API __declspec(dllexport)
@@ -22,18 +20,12 @@
 #define C_EXPORT_END
 #endif // __cplusplus
 
-typedef size_t RTP_session_handle;
-
-#define LIBRTP_OK                       0
-#define LIBRTP_UNDEFINED_ERROR          -1
-#define LIBRTP_MEMORY_ERROR             -2
-#define LIBRTP_BAD_PARAMETER            -3
-#define LIBRTP_SESSION_CONFIG_ERROR     -4
-#define LIBRTP_SESSION_ALREADY_STARTED  -5
-#define LIBRTP_SESSION_HANDLE_DEPLETED  -6
-#define LIBRTP_INVALID_SESSION_HANDLE   -7
-
 C_EXPORT_BEGIN
+
+#include <stdint.h>
+#include "libRTPErrorDefine.h"
+
+typedef size_t RTP_session_handle;
 
 LIBRTP_API int initial_RTP_library(size_t max_session_number);
 
