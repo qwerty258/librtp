@@ -13,6 +13,8 @@
 #define LIBRTP_SOCKET_ERROR             -8
 #define LIBRTP_THREAD_CREATE_ERROR      -9
 
+typedef size_t RTP_session_handle;
+
 #endif // !_LIBRTP_ERROR_DEFINE_H_
 
 

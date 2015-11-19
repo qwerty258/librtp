@@ -12,6 +12,7 @@
 #endif // _WIN32
 
 #include "libRTPPayloadProcessors.h"
+#include "libRTPCallbackDefine.h"
 
 #ifdef _WIN32
 typedef SOCKET RTP_socket;
@@ -24,6 +25,7 @@ typedef struct _RTP_session_context
 {
     // session status begin
     bool session_started;
+    size_t this_session_handle;
     // session status end
 
     // session socket begin
@@ -51,6 +53,7 @@ typedef struct _RTP_session_context
     // session receiving end
 
     payload_processer_function p_payload_processer_function;
+    function_give_out_payload p_function_give_out_payload;
 }RTP_session_context;
 
 #endif // !_LIBRTP_SESSIONS_H_
