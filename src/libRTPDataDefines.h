@@ -88,8 +88,8 @@ typedef union _RTP_header_byte_1
 typedef struct _RTP_data
 {
     uint8_t             data[RTP_DATA_BUFFER_SIZE];
-    int32_t             socket_received_size;
-    uint32_t            payload_size;
+    size_t              socket_received_size;
+    size_t              payload_size;
     uint8_t*            payload_start_position;
     RTP_header_byte_0   RTP_package_byte_0;
     RTP_header_byte_1   RTP_package_byte_1;
