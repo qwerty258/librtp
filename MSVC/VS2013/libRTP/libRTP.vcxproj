@@ -29,6 +29,7 @@
     <ClInclude Include="..\..\..\src\libRTPMemory.h" />
     <ClInclude Include="..\..\..\src\libRTPDataDefines.h" />
     <ClInclude Include="..\..\..\src\libRTPPayloadProcessors.h" />
+    <ClInclude Include="..\..\..\src\libRTPPSPayloadProcessor.h" />
     <ClInclude Include="..\..\..\src\libRTPSessions.h" />
     <ClInclude Include="..\..\..\src\libRTPSocket.h" />
     <ClInclude Include="..\..\..\src\libRTPUnpackRTPHeader.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="..\..\..\src\libRTPH264PayloadProcessor.c" />
     <ClCompile Include="..\..\..\src\libRTPMemory.c" />
     <ClCompile Include="..\..\..\src\libRTPPayloadProcessors.c" />
+    <ClCompile Include="..\..\..\src\libRTPPSPayloadProcessor.c" />
     <ClCompile Include="..\..\..\src\libRTPSocket.c" />
     <ClCompile Include="..\..\..\src\libRTPUnpackRTPHeader.c" />
     <ClCompile Include="..\..\..\src\libRTPWorkingThread.c" />

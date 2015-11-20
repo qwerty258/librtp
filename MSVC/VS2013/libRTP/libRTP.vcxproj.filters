@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\..\src\libRTPH264PayloadProcessor.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPPSPayloadProcessor.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\libRTPSessionHandleDefine.h">
       <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPPSPayloadProcessor.h">
+      <Filter>Header Files\src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
