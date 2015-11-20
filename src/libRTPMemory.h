@@ -9,7 +9,7 @@ void* libRTP_malloc(size_t size);
 
 void* libRTP_calloc(size_t size);
 
-// I heared that in some machine free() will crash when freeing NULL pointer
+void* libRTP_realloc(void* pointer, size_t new_size);
 
 void libRTP_free(void* pointer);
 
