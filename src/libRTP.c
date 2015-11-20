@@ -3,28 +3,11 @@
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
 #include "libRTPSocket.h"
-
-#define CHECK_SESSION_STARTED_NO_SET(bool_status)   \
-if(bool_status)                                     \
-{                                                   \
-    return LIBRTP_SESSION_ALREADY_STARTED;          \
-}
+#include "libRTPCheckMacros.h"
 
 RTP_session_context** global_RTP_session_context_pointer_array;
 size_t global_RTP_max_session_number;
 payload_processor_context* global_payload_processor_table;
-
-int check_handle(size_t handle)
-{
-    if(global_RTP_max_session_number <= handle || NULL == global_RTP_session_context_pointer_array[handle])
-    {
-        return LIBRTP_INVALID_SESSION_HANDLE;
-    }
-    else
-    {
-        return LIBRTP_OK;
-    }
-}
 
 LIBRTP_API int initial_RTP_library(size_t max_session_number)
 {
@@ -103,11 +86,8 @@ LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle)
 
 LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    int result;
+    CHECK_HANDLE(handle);
     if(global_RTP_session_context_pointer_array[handle]->session_started)
     {
         global_RTP_session_context_pointer_array[handle]->session_started = false;
@@ -141,11 +121,7 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 
 LIBRTP_API int set_RTP_session_IP_version(RTP_session_handle handle, uint32_t version)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->IP_version = version;
     return LIBRTP_OK;
@@ -153,12 +129,8 @@ LIBRTP_API int set_RTP_session_IP_version(RTP_session_handle handle, uint32_t ve
 
 LIBRTP_API int set_RTP_session_local_IPv4(RTP_session_handle handle, char* IPv4)
 {
+    CHECK_HANDLE(handle);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->local_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->local_IPv4);
@@ -167,11 +139,7 @@ LIBRTP_API int set_RTP_session_local_IPv4(RTP_session_handle handle, char* IPv4)
 
 LIBRTP_API int set_RTP_session_local_port(RTP_session_handle handle, uint16_t port)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->local_port = port;
     return LIBRTP_OK;
@@ -179,12 +147,8 @@ LIBRTP_API int set_RTP_session_local_port(RTP_session_handle handle, uint16_t po
 
 LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session_handle handle, char* IPv4)
 {
+    CHECK_HANDLE(handle);
     CHECK_NULL_PARAMETER_AND_RETURN(IPv4);
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->remote_IPv4 = libRTP_strdup(IPv4);
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->remote_IPv4);
@@ -193,11 +157,7 @@ LIBRTP_API int set_RTP_session_remote_IPv4(RTP_session_handle handle, char* IPv4
 
 LIBRTP_API int set_RTP_session_remote_port(RTP_session_handle handle, uint16_t port)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->remote_port = port;
     return LIBRTP_OK;
@@ -205,11 +165,7 @@ LIBRTP_API int set_RTP_session_remote_port(RTP_session_handle handle, uint16_t p
 
 LIBRTP_API int set_RTP_session_IP_protocol(RTP_session_handle handle, uint32_t protocol)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->IP_protocol = protocol;
     return LIBRTP_OK;
@@ -217,11 +173,8 @@ LIBRTP_API int set_RTP_session_IP_protocol(RTP_session_handle handle, uint32_t p
 
 LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 {
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
+    int result;
+    CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
 
     for(size_t i = 0;; i++)
@@ -288,12 +241,8 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 
 LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function)
 {
+    CHECK_HANDLE(handle);
     CHECK_NULL_PARAMETER_AND_RETURN(p_function);
-    int result = check_handle(handle);
-    if(LIBRTP_OK != result)
-    {
-        return result;
-    }
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->p_function_give_out_payload = p_function;
     return LIBRTP_OK;
