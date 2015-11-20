@@ -27,6 +27,8 @@ C_EXPORT_BEGIN
 
 LIBRTP_API int initial_RTP_library(size_t max_session_number);
 
+typedef size_t RTP_session_handle;
+
 LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle);
 
 #define LIBRTP_AF_INET  2
