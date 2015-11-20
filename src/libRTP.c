@@ -128,6 +128,11 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 
     concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
 
+    libRTP_free(global_RTP_session_context_pointer_array[handle]->local_IPv4);
+    libRTP_free(global_RTP_session_context_pointer_array[handle]->local_IPV6);
+    libRTP_free(global_RTP_session_context_pointer_array[handle]->remote_IPv4);
+    libRTP_free(global_RTP_session_context_pointer_array[handle]->remote_IPv6);
+
     libRTP_free(global_RTP_session_context_pointer_array[handle]);
     global_RTP_session_context_pointer_array[handle] = NULL;
 
@@ -279,7 +284,7 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 #endif // _WIN32
 
     return LIBRTP_OK;
-    }
+}
 
 LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function)
 {
