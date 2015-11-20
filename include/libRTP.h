@@ -27,11 +27,7 @@ C_EXPORT_BEGIN
 
 LIBRTP_API int initial_RTP_library(size_t max_session_number);
 
-LIBRTP_API int uninitial_RTP_library(void);
-
 LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle);
-
-LIBRTP_API int close_RTP_session(RTP_session_handle handle);
 
 #define LIBRTP_AF_INET  2
 #define LIBRTP_AF_INET6 23
@@ -56,6 +52,10 @@ typedef int(*function_give_out_payload)(RTP_session_handle session_handle, uint8
 LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function);
 
 LIBRTP_API int RTP_session_start(RTP_session_handle handle);
+
+LIBRTP_API int close_RTP_session(RTP_session_handle handle);
+
+LIBRTP_API int uninitial_RTP_library(void);
 
 C_EXPORT_END
 
