@@ -37,7 +37,7 @@ LIBRTP_API int initial_RTP_library(size_t max_session_number)
     int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
     if(0 != result)
     {
-        // to do: handle error
+        return LIBRTP_SOCKET_ERROR;
     }
 #else
 #endif // _WIN32
@@ -68,7 +68,7 @@ LIBRTP_API int uninitial_RTP_library(void)
     int result = WSACleanup();
     if(0 != result)
     {
-        // to do: handle error
+        return LIBRTP_SOCKET_ERROR;
     }
 #else
 #endif // _WIN32
