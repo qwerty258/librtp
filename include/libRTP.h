@@ -24,10 +24,10 @@ C_EXPORT_BEGIN
 
 #include <stdint.h>
 #include "libRTPErrorDefine.h"
+#include "libRTPCallbackDefine.h"
+#include "libRTPSessionHandleDefine.h"
 
 LIBRTP_API int initial_RTP_library(size_t max_session_number);
-
-typedef size_t RTP_session_handle;
 
 LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle);
 
@@ -48,8 +48,6 @@ LIBRTP_API int set_RTP_session_remote_port(RTP_session_handle handle, uint16_t p
 #define LIBRTP_IP_PROTOCOL_UDP  17
 
 LIBRTP_API int set_RTP_session_IP_protocol(RTP_session_handle handle, uint32_t protocol);
-
-typedef int(*function_give_out_payload)(RTP_session_handle session_handle, uint8_t* payload, uint32_t payload_size, uint16_t sequence_number, uint32_t timestamp);
 
 LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function);
 

@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h" />
+    <ClInclude Include="..\..\..\include\libRTPCallbackDefine.h" />
     <ClInclude Include="..\..\..\include\libRTPErrorDefine.h" />
+    <ClInclude Include="..\..\..\include\libRTPSessionHandleDefine.h" />
+    <ClInclude Include="..\..\..\src\libRTPCheckMacros.h" />
     <ClInclude Include="..\..\..\src\libRTPConcurrentQueue.h" />
     <ClInclude Include="..\..\..\src\libRTPH264PayloadProcessor.h" />
     <ClInclude Include="..\..\..\src\libRTPMemory.h" />

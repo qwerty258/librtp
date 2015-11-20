@@ -83,5 +83,14 @@
     <ClInclude Include="..\..\..\src\libRTPH264PayloadProcessor.h">
       <Filter>Header Files\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\libRTPCheckMacros.h">
+      <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\libRTPCallbackDefine.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\libRTPSessionHandleDefine.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
