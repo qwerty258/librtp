@@ -171,6 +171,14 @@ LIBRTP_API int set_RTP_session_IP_protocol(RTP_session_handle handle, uint32_t p
     return LIBRTP_OK;
 }
 
+LIBRTP_API int set_RTP_session_payload_type(RTP_session_handle handle, uint32_t payload_type)
+{
+    CHECK_HANDLE(handle);
+    CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
+    global_RTP_session_context_pointer_array[handle]->payload_type = payload_type;
+    return LIBRTP_OK;
+}
+
 LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 {
     int result;
@@ -179,10 +187,12 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 
     for(size_t i = 0;; i++)
     {
-        if(MAKEFOURCC('H', '2', '6', '4') == global_payload_processor_table[i].payload_type ||
+        if(global_RTP_session_context_pointer_array[handle]->payload_type ==
+           global_payload_processor_table[i].payload_type ||
            0 == global_payload_processor_table[i].payload_type)
         {
-            global_RTP_session_context_pointer_array[handle]->p_payload_processer_function = global_payload_processor_table[i].p_function;
+            global_RTP_session_context_pointer_array[handle]->p_payload_processer_function =
+                global_payload_processor_table[i].p_function;
             break;
         }
     }

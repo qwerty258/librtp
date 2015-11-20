@@ -26,6 +26,7 @@ typedef struct _RTP_session_context
     // session status begin
     bool session_started;
     size_t this_session_handle;
+    uint32_t payload_type;
     // session status end
 
     // session socket begin

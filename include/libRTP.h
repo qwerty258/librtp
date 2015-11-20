@@ -49,6 +49,8 @@ LIBRTP_API int set_RTP_session_remote_port(RTP_session_handle handle, uint16_t p
 
 LIBRTP_API int set_RTP_session_IP_protocol(RTP_session_handle handle, uint32_t protocol);
 
+LIBRTP_API int set_RTP_session_payload_type(RTP_session_handle handle, uint32_t payload_type);
+
 LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function);
 
 LIBRTP_API int RTP_session_start(RTP_session_handle handle);
