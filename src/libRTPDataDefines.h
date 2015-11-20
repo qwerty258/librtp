@@ -45,30 +45,30 @@ local memory: high -> csrc_len:4 -> extension:1 -> padding:1 -> version:2 -> low
 
 typedef struct
 {
-    unsigned char CC : 4;   // CC: CSRC count, normally 0 in the absence of RTP mixers
-    unsigned char X : 1;    // X: Extension, MUST be zero
-    unsigned char P : 1;    // P: Padding bit, Padding MUST NOT be used
-    unsigned char V : 2;    // V: Version, 2 bits, MUST be 0x2
+    uint8_t CC : 4;   // CC: CSRC count, normally 0 in the absence of RTP mixers
+    uint8_t X : 1;    // X: Extension, MUST be zero
+    uint8_t P : 1;    // P: Padding bit, Padding MUST NOT be used
+    uint8_t V : 2;    // V: Version, 2 bits, MUST be 0x2
 }RTP_header_byte_0_little_endian;
 
 typedef struct
 {
-    unsigned char PT : 7;   // PT: 7 bits, Payload Type, dynamically established
-    unsigned char M : 1;    // M: Marker bit
+    uint8_t PT : 7;   // PT: 7 bits, Payload Type, dynamically established
+    uint8_t M : 1;    // M: Marker bit
 }RTP_header_byte_1_little_endian;
 
 typedef struct
 {
-    unsigned char V : 2;
-    unsigned char P : 1;
-    unsigned char X : 1;
-    unsigned char CC : 4;
+    uint8_t V : 2;
+    uint8_t P : 1;
+    uint8_t X : 1;
+    uint8_t CC : 4;
 }RTP_header_byte_0_big_endian;
 
 typedef struct
 {
-    unsigned char M : 1;
-    unsigned char PT : 7;
+    uint8_t M : 1;
+    uint8_t PT : 7;
 }RTP_header_byte_1_big_endian;
 
 typedef union _RTP_header_byte_0

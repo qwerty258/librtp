@@ -27,9 +27,9 @@ NAL Unit Type | Content of NAL Unit          | NRI(binary)
 */
 typedef struct
 {
-    unsigned char TYPE : 5;
-    unsigned char NRI : 2;
-    unsigned char F : 1;
+    uint8_t TYPE : 5;
+    uint8_t NRI : 2;
+    uint8_t F : 1;
 } NALU_HEADER;
 
 /*
@@ -41,9 +41,9 @@ typedef struct
 */
 typedef struct
 {
-    unsigned char TYPE : 5;
-    unsigned char NRI : 2;
-    unsigned char F : 1;
+    uint8_t TYPE : 5;
+    uint8_t NRI : 2;
+    uint8_t F : 1;
 } FU_INDICATOR;
 
 /*
@@ -55,10 +55,10 @@ typedef struct
 */
 typedef struct
 {
-    unsigned char TYPE : 5;
-    unsigned char R : 1;
-    unsigned char E : 1;
-    unsigned char S : 1;
+    uint8_t TYPE : 5;
+    uint8_t R : 1;
+    uint8_t E : 1;
+    uint8_t S : 1;
 } FU_HEADER;
 
 typedef struct
@@ -68,12 +68,12 @@ typedef struct
     // syntax violations.A value of 1 indicates that the NAL unit
     // type octet and payload may contain bit errors or other syntax
     // violations.
-    unsigned char  forbidden_zero_bit;
-    unsigned char  NAL_reference_idc;   // NALU_PRIORITY_xxxx
-    unsigned char  NAL_unit_type;       // NALU_TYPE_xxxx
-    unsigned int   startcodeprefix_len; // prefix bytes
-    unsigned int   len;                 // including nal header's length, from first 00000001 to next 000000001
-    unsigned int   max_size;            // make more nal's length
+    uint8_t  forbidden_zero_bit;
+    uint8_t  NAL_reference_idc;   // NALU_PRIORITY_xxxx
+    uint8_t  NAL_unit_type;       // NALU_TYPE_xxxx
+    uint32_t   startcodeprefix_len; // prefix bytes
+    uint32_t   len;                 // including nal header's length, from first 00000001 to next 000000001
+    uint32_t   max_size;            // make more nal's length
 } NALU_t;
 
 
