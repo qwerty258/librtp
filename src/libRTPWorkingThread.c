@@ -65,7 +65,7 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
 
     CHECK_NULL_PARAMETER_AND_RETURN(parameter);
 
-    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+    p_RTP_session_context = (RTP_session_context*)parameter;
 
     while(p_RTP_session_context->session_started)
     {
