@@ -3,18 +3,22 @@
 #include "libRTPMemory.h"
 #include "libRTPWorkingThread.h"
 #include "libRTPUnpackRTPHeader.h"
+#include "libRTPCheckMacros.h"
 #include <stdio.h>
 
 uint32_t WINAPI RTP_receiving_thread(void* parameter)
 {
-    int32_t result;
-    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+    int32_t result = 0;
+    RTP_data* p_raw_socket_data = NULL;
+    RTP_session_context* p_RTP_session_context = NULL;
+
+    CHECK_NULL_PARAMETER_AND_RETURN(parameter);
+
+    p_RTP_session_context = (RTP_session_context*)parameter;
     if(NULL == p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data)
     {
         return -1;
     }
-
-    RTP_data* p_raw_socket_data = NULL;
 
     while(p_RTP_session_context->session_started)
     {
@@ -56,8 +60,13 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
 
 uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
 {
-    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
     RTP_data* raw_data = NULL;
+    RTP_session_context* p_RTP_session_context = NULL;
+
+    CHECK_NULL_PARAMETER_AND_RETURN(parameter);
+
+    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
+
     while(p_RTP_session_context->session_started)
     {
         raw_data = concurrent_queue_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
@@ -68,15 +77,20 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         else
         {
             unpack_RTP_header(raw_data);
-            p_RTP_session_context->p_payload_processer_function(raw_data);
-            p_RTP_session_context->p_function_give_out_payload(
-                p_RTP_session_context->this_session_handle,
-                raw_data->payload_start_position,
-                raw_data->payload_size,
-                raw_data->sequence_number,
-                raw_data->timestamp);
+            if(NULL != p_RTP_session_context->p_payload_processer_function)
+            {
+                p_RTP_session_context->p_payload_processer_function(raw_data);
+            }
+            if(NULL != p_RTP_session_context->p_function_give_out_payload)
+            {
+                p_RTP_session_context->p_function_give_out_payload(
+                    p_RTP_session_context->this_session_handle,
+                    raw_data->payload_start_position,
+                    raw_data->payload_size,
+                    raw_data->sequence_number,
+                    raw_data->timestamp);
+            }
             libRTP_free(raw_data);
-            raw_data = NULL;
         }
     }
     return 0;
@@ -84,25 +98,29 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
 
 uint32_t WINAPI RTCP_thread(void* parameter)
 {
-    RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
-    int result = 0;
-    uint8_t* buffer = libRTP_calloc(RTP_DATA_BUFFER_SIZE);
-
     size_t write_count = 0;
+    int result = 0;
+    RTP_session_context* p_RTP_session_context;
+    uint8_t* buffer;
     char filename[MAX_PATH];
+
+    CHECK_NULL_PARAMETER_AND_RETURN(parameter);
+    p_RTP_session_context = (RTP_session_context*)parameter;
+    buffer = libRTP_calloc(RTP_DATA_BUFFER_SIZE);
+    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(buffer);
 
     while(p_RTP_session_context->session_started)
     {
-        printf("RTCP_thread\n");
         result = recv(p_RTP_session_context->sock_for_RTCP, buffer, RTP_DATA_BUFFER_SIZE, 0);
         if(0 < result)
         {
-            for(write_count = 0; write_count < 5; write_count++)
+            if(write_count < 5)
             {
                 _snprintf(filename, MAX_PATH, "D:\\RTCPdata%u", write_count);
                 FILE* pFile = fopen(filename, "wb");
                 fwrite(buffer, result, 1, pFile);
                 fclose(pFile);
+                write_count++;
             }
 
             for(size_t i = 0; i < 10; i++)
