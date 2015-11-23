@@ -1,7 +1,7 @@
-#include "libRTPH264PayloadProcessingThread.h"
 #include "libRTPSessions.h"
 #include "libRTPMemory.h"
 #include "libRTPCheckMacros.h"
+#include "libRTPH264PayloadProcessingThread.h"
 
 /*
 
@@ -92,8 +92,8 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_H264_buffer);
     uint8_t* p_temp = NULL;
     uint8_t* p_H264_buffer_current_position = NULL;
-    uint32_t H264_data_size = 0;
-    uint32_t H264_buffer_size = USHRT_MAX;
+    size_t H264_data_size = 0;
+    size_t H264_buffer_size = USHRT_MAX;
     RTP_data* p_RTP_data = NULL;
     NALU_t base_NALU = {0};
 

@@ -1,7 +1,7 @@
-#include "libRTPPSPayloadProcessingThread.h"
 #include "libRTPSessions.h"
 #include "libRTPMemory.h"
 #include "libRTPCheckMacros.h"
+#include "libRTPPSPayloadProcessingThread.h"
 
 #define CHECK_PS_BUFFER_SIZE(size)                                          \
 if(PS_buffer_size - (p_PS_buffer_current_position - p_PS_buffer) < (size))  \
@@ -20,8 +20,8 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_PS_buffer);
     uint8_t* p_temp = NULL;
     uint8_t* p_PS_buffer_current_position = NULL;
-    uint32_t PS_data_size = 0;
-    uint32_t PS_buffer_size = USHRT_MAX;
+    size_t PS_data_size = 0;
+    size_t PS_buffer_size = USHRT_MAX;
 
     RTP_data* p_RTP_data = NULL;
 
