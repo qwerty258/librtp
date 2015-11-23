@@ -12,6 +12,6 @@
 
 uint32_t WINAPI RTP_receiving_thread(void* parameter);
 uint32_t WINAPI RTCP_thread(void* parameter);
-uint32_t WINAPI RTP_package_consuming_thread(void* parameter);
+uint32_t WINAPI Unpack_RTP_header(void* parameter);
 
 #endif // !_LIBRTP_WORKING_THREAD_H_

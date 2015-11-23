@@ -51,6 +51,7 @@ typedef struct _RTP_session_context
     RTP_thread_handle RTCP_thread_handle;
     RTP_thread_handle RTP_package_consuming_thread_handle;
     concurrent_queue_handle concurrent_queue_handle_for_raw_socket_data;
+    concurrent_queue_handle concurrent_queue_handle_for_payload;
     // session receiving end
 
     payload_processer_function p_payload_processer_function;

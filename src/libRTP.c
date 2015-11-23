@@ -107,6 +107,7 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
     }
 
     concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
+    concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_payload);
 
     libRTP_free(global_RTP_session_context_pointer_array[handle]->local_IPv4);
     libRTP_free(global_RTP_session_context_pointer_array[handle]->local_IPV6);
@@ -199,11 +200,14 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
 
     global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data = concurrent_queue_get_handle();
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
+    global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_payload = concurrent_queue_get_handle();
+    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_payload);
 
     result = initialize_sockets(global_RTP_session_context_pointer_array[handle]);
     if(LIBRTP_OK != result)
     {
         concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
+        concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_payload);
         close_sockets(global_RTP_session_context_pointer_array[handle]);
         return result;
     }
@@ -230,7 +234,7 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
     global_RTP_session_context_pointer_array[handle]->RTP_package_consuming_thread_handle = CreateThread(
         NULL,
         0,
-        RTP_package_consuming_thread,
+        Unpack_RTP_header,
         global_RTP_session_context_pointer_array[handle],
         0,
         &result);
@@ -240,6 +244,7 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
     {
         global_RTP_session_context_pointer_array[handle]->session_started = false;
         concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
+        concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_payload);
         close_sockets(global_RTP_session_context_pointer_array[handle]);
         return LIBRTP_THREAD_CREATE_ERROR;
     }

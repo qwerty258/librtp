@@ -58,7 +58,7 @@ uint32_t WINAPI RTP_receiving_thread(void* parameter)
     return 0;
 }
 
-uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
+uint32_t WINAPI Unpack_RTP_header(void* parameter)
 {
     RTP_data* raw_data = NULL;
     RTP_session_context* p_RTP_session_context = NULL;
@@ -77,20 +77,30 @@ uint32_t WINAPI RTP_package_consuming_thread(void* parameter)
         else
         {
             unpack_RTP_header(raw_data);
-            if(NULL != p_RTP_session_context->p_payload_processer_function)
+            //if(NULL != p_RTP_session_context->p_payload_processer_function)
+            //{
+            //    p_RTP_session_context->p_payload_processer_function(raw_data);
+            //}
+            //if(NULL != p_RTP_session_context->p_function_give_out_payload)
+            //{
+            //    p_RTP_session_context->p_function_give_out_payload(
+            //        p_RTP_session_context->this_session_handle,
+            //        raw_data->payload_start_position,
+            //        raw_data->payload_size,
+            //        raw_data->sequence_number,
+            //        raw_data->timestamp);
+            //}
+            if(2 == raw_data->RTP_package_byte_0.little_endian.V)
             {
-                p_RTP_session_context->p_payload_processer_function(raw_data);
+                if(!concurrent_queue_pushback(p_RTP_session_context->concurrent_queue_handle_for_payload, raw_data))
+                {
+                    libRTP_free(raw_data);
+                }
             }
-            if(NULL != p_RTP_session_context->p_function_give_out_payload)
+            else
             {
-                p_RTP_session_context->p_function_give_out_payload(
-                    p_RTP_session_context->this_session_handle,
-                    raw_data->payload_start_position,
-                    raw_data->payload_size,
-                    raw_data->sequence_number,
-                    raw_data->timestamp);
+                libRTP_free(raw_data);
             }
-            libRTP_free(raw_data);
         }
     }
     return 0;
