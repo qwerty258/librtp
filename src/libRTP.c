@@ -177,6 +177,27 @@ LIBRTP_API int set_RTP_session_payload_type(RTP_session_handle handle, uint32_t 
     CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->payload_type = payload_type;
+    size_t i = 0;
+    while(true)
+    {
+        if(payload_type == global_payload_processor_table[i].payload_type ||
+           0 == global_payload_processor_table[i].payload_type)
+        {
+            break;
+        }
+        i++;
+    }
+
+    if(NULL == global_payload_processor_table[i].p_function_payload_processing_thread)
+    {
+        return LIBRTP_PAYLOAD_UNSUPPORTED;
+    }
+    else
+    {
+        global_RTP_session_context_pointer_array[handle]->p_function_payload_processing_thread =
+            global_payload_processor_table[i].p_function_payload_processing_thread;
+    }
+
     return LIBRTP_OK;
 }
 
@@ -185,18 +206,6 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
     int result;
     CHECK_HANDLE(handle);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
-
-    for(size_t i = 0;; i++)
-    {
-        if(global_RTP_session_context_pointer_array[handle]->payload_type ==
-           global_payload_processor_table[i].payload_type ||
-           0 == global_payload_processor_table[i].payload_type)
-        {
-            global_RTP_session_context_pointer_array[handle]->p_payload_processer_function =
-                global_payload_processor_table[i].p_function;
-            break;
-        }
-    }
 
     global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data = concurrent_queue_get_handle();
     CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);
@@ -238,9 +247,18 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
         global_RTP_session_context_pointer_array[handle],
         0,
         &result);
+
+    global_RTP_session_context_pointer_array[handle]->RTP_payload_processing_thread_handle = CreateThread(
+        NULL,
+        0,
+        global_RTP_session_context_pointer_array[handle]->p_function_payload_processing_thread,
+        global_RTP_session_context_pointer_array[handle],
+        0,
+        &result);
     if(NULL == global_RTP_session_context_pointer_array[handle]->RTP_receiving_thread_handle ||
        NULL == global_RTP_session_context_pointer_array[handle]->RTCP_thread_handle ||
-       NULL == global_RTP_session_context_pointer_array[handle]->Unpack_RTP_header_thread_handle)
+       NULL == global_RTP_session_context_pointer_array[handle]->Unpack_RTP_header_thread_handle ||
+       NULL == global_RTP_session_context_pointer_array[handle]->RTP_payload_processing_thread_handle)
     {
         global_RTP_session_context_pointer_array[handle]->session_started = false;
         concurrent_queue_free(&global_RTP_session_context_pointer_array[handle]->concurrent_queue_handle_for_raw_socket_data);

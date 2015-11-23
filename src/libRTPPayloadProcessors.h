@@ -12,12 +12,12 @@
 ((uint32_t)(uint8_t)(ch3) << 24 ))
 #endif /* defined(MAKEFOURCC) */
 
-typedef void(*payload_processer_function)(RTP_data* p_RTP_data);
+typedef uint32_t(*function_payload_processing_thread)(void* parameter);
 
 typedef struct _payload_processor_context
 {
     uint32_t payload_type;
-    payload_processer_function p_function;
+    function_payload_processing_thread p_function_payload_processing_thread;
 }payload_processor_context;
 
 payload_processor_context* get_payload_processor_table(void);

@@ -77,19 +77,6 @@ uint32_t WINAPI Unpack_RTP_header(void* parameter)
         else
         {
             unpack_RTP_header(raw_data);
-            //if(NULL != p_RTP_session_context->p_payload_processer_function)
-            //{
-            //    p_RTP_session_context->p_payload_processer_function(raw_data);
-            //}
-            //if(NULL != p_RTP_session_context->p_function_give_out_payload)
-            //{
-            //    p_RTP_session_context->p_function_give_out_payload(
-            //        p_RTP_session_context->this_session_handle,
-            //        raw_data->payload_start_position,
-            //        raw_data->payload_size,
-            //        raw_data->sequence_number,
-            //        raw_data->timestamp);
-            //}
             if(2 == raw_data->RTP_package_byte_0.little_endian.V)
             {
                 if(!concurrent_queue_pushback(p_RTP_session_context->concurrent_queue_handle_for_payload, raw_data))
@@ -103,6 +90,21 @@ uint32_t WINAPI Unpack_RTP_header(void* parameter)
             }
         }
     }
+
+    // pop out all the data and free
+    while(true)
+    {
+        raw_data = concurrent_queue_pophead(p_RTP_session_context->concurrent_queue_handle_for_raw_socket_data);
+        if(NULL == raw_data)
+        {
+            break;
+        }
+        else
+        {
+            libRTP_free(raw_data);
+        }
+    }
+
     return 0;
 }
 
