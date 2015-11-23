@@ -6,6 +6,15 @@
 
 // ISO/IEC 13818-1 : 2000 program stream(PS)
 
+#define PROGRAM_STREAM_MAP______    0xBC
+#define PADDING_STREAM__________    0xBE
+#define ITU_T_REC_H_222_1_TYPE_E    0xF8
+#define PRIVATE_STREAM_2________    0xBF
+#define ECM_____________________    0xF0
+#define EMM_____________________    0xF1
+#define PROGRAM_STREAM_DIRECTORY    0xFF
+#define DSMCC_STREAM____________    0XF2
+
 typedef struct _system_clock_reference
 {
     // The first part,
@@ -54,7 +63,36 @@ typedef struct _system_header
     // '0000 0000 0000 0000 0000 0001 1011 1011' (0x000001BB).
     // It identifies the beginning of a system header
     uint32_t system_header_start_code;
+    // A 22-bit field. The rate_bound is an integer value
+    // greater than or equal to the maximum value of
+    // the program_mux_rate field coded in any pack of the Program Stream.
+    // It may be used by a decoder to assess whether it is
+    // capable of decoding the entire stream.
+    uint32_t rate_bound;
+    // A 6-bit field. The audio_bound is an integer
+    // in the inclusive range from 0 to 32 and
+    // is set to a value greater than or equal to the maximum number
+    // of ISO / IEC 13818 - 3 and ISO / IEC 11172 - 3 audio streams
+    // in the Program Stream for which the decoding processes are simultaneously active.
+    // For the purpose of this subclause, the decoding process of
+    // an ISO / IEC 13818 - 3 or ISO / IEC 11172 - 3 audio stream is
+    // active if the STD buffer is not empty or if a Presentation Unit is
+    // being presented in the P - STD model.
+    uint8_t audio_bound;
+    uint8_t fixed_flag;
+    uint8_t CSPS_flag;
+    uint8_t system_audio_lock_flag;
+    uint8_t system_video_lock_flag;
+    uint8_t video_bound;
+    uint8_t packet_rate_restriction_flag;
 }system_header;
+
+typedef struct _PES_packet
+{
+    uint32_t packet_start_code_prefix;
+    uint8_t stream_id;
+    uint16_t PES_packet_length;
+}PES_packet;
 
 void PS_payload_processor(RTP_data* p_RTP_data);
 
