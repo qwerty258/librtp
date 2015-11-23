@@ -22,6 +22,8 @@
     <ClInclude Include="..\..\..\include\libRTP.h" />
     <ClInclude Include="..\..\..\include\libRTPCallbackDefine.h" />
     <ClInclude Include="..\..\..\include\libRTPErrorDefine.h" />
+    <ClInclude Include="..\..\..\include\libRTPExport.h" />
+    <ClInclude Include="..\..\..\include\libRTPPayloadTypes.h" />
     <ClInclude Include="..\..\..\include\libRTPSessionHandleDefine.h" />
     <ClInclude Include="..\..\..\src\libRTPCheckMacros.h" />
     <ClInclude Include="..\..\..\src\libRTPConcurrentQueue.h" />
@@ -41,6 +43,7 @@
     <ClCompile Include="..\..\..\src\libRTPH264PayloadProcessingThread.c" />
     <ClCompile Include="..\..\..\src\libRTPMemory.c" />
     <ClCompile Include="..\..\..\src\libRTPPayloadProcessors.c" />
+    <ClCompile Include="..\..\..\src\libRTPPayloadTypes.c" />
     <ClCompile Include="..\..\..\src\libRTPPSPayloadProcessingThread.c" />
     <ClCompile Include="..\..\..\src\libRTPSocket.c" />
     <ClCompile Include="..\..\..\src\libRTPUnpackRTPHeader.c" />

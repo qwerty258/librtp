@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\..\src\libRTPPSPayloadProcessingThread.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\libRTPPayloadTypes.c">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\libRTP.h">
@@ -97,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\libRTPPSPayloadProcessingThread.h">
       <Filter>Header Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\libRTPExport.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\libRTPPayloadTypes.h">
+      <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
