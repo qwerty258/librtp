@@ -4,6 +4,12 @@
 
 #include "libRTPDataDefines.h"
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#define WINAPI
+#endif // _WIN32
+
 #ifndef MAKEFOURCC
 #define MAKEFOURCC(ch0, ch1, ch2, ch3)  \
 ((uint32_t)(uint8_t)(ch0) |             \
@@ -12,7 +18,7 @@
 ((uint32_t)(uint8_t)(ch3) << 24 ))
 #endif /* defined(MAKEFOURCC) */
 
-typedef uint32_t(*function_payload_processing_thread)(void* parameter);
+typedef uint32_t(WINAPI *function_payload_processing_thread)(void* parameter);
 
 typedef struct _payload_processor_context
 {
