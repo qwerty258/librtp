@@ -89,11 +89,11 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
     uint8_t* p_H264_buffer = libRTP_calloc(USHRT_MAX);
+    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_H264_buffer);
     uint8_t* p_temp = NULL;
     uint8_t* p_H264_buffer_current_position = NULL;
     uint32_t H264_data_size = 0;
     uint32_t H264_buffer_size = USHRT_MAX;
-    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_H264_buffer);
     RTP_data* p_RTP_data = NULL;
     NALU_t base_NALU = {0};
 
