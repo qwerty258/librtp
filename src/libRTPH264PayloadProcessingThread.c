@@ -231,12 +231,15 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
 
             if(1 == p_RTP_data->RTP_package_byte_1.little_endian.M)
             {
-                p_RTP_session_context->p_function_give_out_payload(
-                    p_RTP_session_context->this_session_handle,
-                    p_H264_buffer,
-                    H264_data_size,
-                    0,
-                    0);
+                if(NULL != p_RTP_session_context->p_function_give_out_payload)
+                {
+                    p_RTP_session_context->p_function_give_out_payload(
+                        p_RTP_session_context->this_session_handle,
+                        p_H264_buffer,
+                        H264_data_size,
+                        0,
+                        0);
+                }
                 p_H264_buffer_current_position = p_H264_buffer;
                 H264_data_size = 0;
             }
