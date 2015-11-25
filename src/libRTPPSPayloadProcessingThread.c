@@ -91,8 +91,8 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
                 p_PS_buffer_current_position = p_PS_buffer;
                 PS_data_size = 0;
             }
+            libRTP_free(p_PS_buffer);
         }
-        libRTP_free(p_PS_buffer);
     }
 
     libRTP_free(p_PS_buffer);
