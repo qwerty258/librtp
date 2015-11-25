@@ -1,4 +1,5 @@
 #include "libRTPMemory.h"
+#include "libRTPCheckMacros.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -42,3 +43,24 @@ char* libRTP_strdup(char* string)
     return strdup(string);
 #endif // _WIN32
 }
+
+int
+check_buffer_size_and_realloc(
+    uint8_t** p_p_buffer,
+    size_t* p_buffer_size,
+    size_t data_size,
+    uint8_t** p_p_buffer_current_position,
+    size_t size_of_data_going_to_write)
+{
+    uint8_t* p_temp;
+    if((*p_buffer_size) - data_size < size_of_data_going_to_write)
+    {
+        (*p_buffer_size) = (size_of_data_going_to_write)* 2 + (*p_buffer_size);
+        p_temp = realloc((*p_p_buffer), (*p_buffer_size));
+        CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_temp);
+        (*p_p_buffer) = p_temp;
+        (*p_p_buffer_current_position) = (*p_p_buffer) + data_size;
+    }
+    return LIBRTP_OK;
+}
+
