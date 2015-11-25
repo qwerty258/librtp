@@ -75,16 +75,6 @@ typedef struct
     uint32_t   max_size;            // make more nal's length
 } NALU_t;
 
-#define CHECK_H264_BUFFER_SIZE(size)                                                \
-if(H264_buffer_size - (p_H264_buffer_current_position - p_H264_buffer) < (size))    \
-{                                                                                   \
-    H264_buffer_size = (size) * 2 + H264_buffer_size;                               \
-    p_temp = libRTP_realloc(p_H264_buffer, H264_buffer_size);                       \
-    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_temp);                                \
-    p_H264_buffer = p_temp;                                                         \
-    p_H264_buffer_current_position = p_H264_buffer + H264_data_size;                \
-}
-
 uint32_t WINAPI H264_payload_processing_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
@@ -96,6 +86,7 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
     size_t H264_buffer_size = USHRT_MAX;
     RTP_data* p_RTP_data = NULL;
     NALU_t base_NALU = {0};
+    int32_t result = 0;
 
     uint32_t previous_timestamp = 0;
     uint64_t previous_frame_ID = 0;
@@ -116,6 +107,21 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
         // form H264 data
         else
         {
+            if(1 == p_RTP_data->RTP_package_byte_1.little_endian.M || p_RTP_data->timestamp != previous_timestamp)
+            {
+                if(NULL != p_RTP_session_context->p_function_give_out_payload)
+                {
+                    p_RTP_session_context->p_function_give_out_payload(
+                        p_RTP_session_context->this_session_handle,
+                        p_H264_buffer,
+                        H264_data_size,
+                        0,
+                        0);
+                }
+                p_H264_buffer_current_position = p_H264_buffer;
+                H264_data_size = 0;
+            }
+
             base_NALU.forbidden_zero_bit = ((NALU_HEADER*)(p_RTP_data->payload_start_position))->F;
             base_NALU.NAL_reference_idc = ((NALU_HEADER*)(p_RTP_data->payload_start_position))->NRI;
             base_NALU.NAL_unit_type = ((NALU_HEADER*)(p_RTP_data->payload_start_position))->TYPE;
@@ -124,7 +130,16 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
             if(0 < base_NALU.NAL_unit_type && base_NALU.NAL_unit_type < 24)
             {
                 // 0x00000001 for framing
-                CHECK_H264_BUFFER_SIZE(4);
+                result = check_buffer_size_and_realloc(
+                    &p_H264_buffer,
+                    &H264_buffer_size,
+                    H264_data_size,
+                    &p_H264_buffer_current_position,
+                    4);
+                if(result != LIBRTP_OK)
+                {
+                    return result;
+                }
                 p_H264_buffer_current_position[0] = 0x00;
                 p_H264_buffer_current_position[1] = 0x00;
                 p_H264_buffer_current_position[2] = 0x00;
@@ -132,7 +147,16 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                 p_H264_buffer_current_position += 4;
                 H264_data_size += 4;
                 // directly copy header and data to H264 data buffer
-                CHECK_H264_BUFFER_SIZE(p_RTP_data->payload_size);
+                result = check_buffer_size_and_realloc(
+                    &p_H264_buffer,
+                    &H264_buffer_size,
+                    H264_data_size,
+                    &p_H264_buffer_current_position,
+                    p_RTP_data->payload_size);
+                if(result != LIBRTP_OK)
+                {
+                    return result;
+                }
                 memcpy(p_H264_buffer_current_position, p_RTP_data->payload_start_position, p_RTP_data->payload_size);
                 p_H264_buffer_current_position += p_RTP_data->payload_size;
                 H264_data_size += p_RTP_data->payload_size;
@@ -145,7 +169,16 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                 {
                     p_RTP_data->payload_start_position += 2;
                     p_RTP_data->payload_size -= 2;
-                    CHECK_H264_BUFFER_SIZE(p_RTP_data->payload_size);
+                    result = check_buffer_size_and_realloc(
+                        &p_H264_buffer,
+                        &H264_buffer_size,
+                        H264_data_size,
+                        &p_H264_buffer_current_position,
+                        p_RTP_data->payload_size);
+                    if(result != LIBRTP_OK)
+                    {
+                        return result;
+                    }
                     memcpy(p_H264_buffer_current_position, p_RTP_data->payload_start_position, p_RTP_data->payload_size);
                     p_H264_buffer_current_position += p_RTP_data->payload_size;
                     H264_data_size += p_RTP_data->payload_size;
@@ -162,7 +195,16 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                     if(((FU_HEADER*)(p_RTP_data->payload_start_position))->S == 1)
                     {
                         // 0x00000001 for framing
-                        CHECK_H264_BUFFER_SIZE(4);
+                        result = check_buffer_size_and_realloc(
+                            &p_H264_buffer,
+                            &H264_buffer_size,
+                            H264_data_size,
+                            &p_H264_buffer_current_position,
+                            4);
+                        if(result != LIBRTP_OK)
+                        {
+                            return result;
+                        }
                         p_H264_buffer_current_position[0] = 0x00;
                         p_H264_buffer_current_position[1] = 0x00;
                         p_H264_buffer_current_position[2] = 0x00;
@@ -171,7 +213,16 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                         H264_data_size += 4;
 
                         NAL_header_temp |= ((FU_HEADER*)(p_RTP_data->payload_start_position))->TYPE;
-                        CHECK_H264_BUFFER_SIZE(1);
+                        result = check_buffer_size_and_realloc(
+                            &p_H264_buffer,
+                            &H264_buffer_size,
+                            H264_data_size,
+                            &p_H264_buffer_current_position,
+                            1);
+                        if(result != LIBRTP_OK)
+                        {
+                            return result;
+                        }
                         p_H264_buffer_current_position[0] = NAL_header_temp;
                         p_H264_buffer_current_position += 1;
                         H264_data_size += 1;
@@ -179,7 +230,17 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                         p_RTP_data->payload_start_position += 1;
                         p_RTP_data->payload_size -= 1;
 
-                        CHECK_H264_BUFFER_SIZE(p_RTP_data->payload_size);
+                        result = check_buffer_size_and_realloc(
+                            &p_H264_buffer,
+                            &H264_buffer_size,
+                            H264_data_size,
+                            &p_H264_buffer_current_position,
+                            p_RTP_data->payload_size);
+                        if(result != LIBRTP_OK)
+                        {
+                            return result;
+                        }
+
                         memcpy(p_H264_buffer_current_position, p_RTP_data->payload_start_position, p_RTP_data->payload_size);
                         p_H264_buffer_current_position += p_RTP_data->payload_size;
                         H264_data_size += p_RTP_data->payload_size;
@@ -190,7 +251,17 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                         p_RTP_data->payload_start_position += 1;
                         p_RTP_data->payload_size -= 1;
 
-                        CHECK_H264_BUFFER_SIZE(p_RTP_data->payload_size);
+                        result = check_buffer_size_and_realloc(
+                            &p_H264_buffer,
+                            &H264_buffer_size,
+                            H264_data_size,
+                            &p_H264_buffer_current_position,
+                            p_RTP_data->payload_size);
+                        if(result != LIBRTP_OK)
+                        {
+                            return result;
+                        }
+
                         memcpy(p_H264_buffer_current_position, p_RTP_data->payload_start_position, p_RTP_data->payload_size);
                         p_H264_buffer_current_position += p_RTP_data->payload_size;
                         H264_data_size += p_RTP_data->payload_size;
@@ -227,21 +298,6 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                 // if there is lost package, calculate how many lost
                 current_number_of_lost_package += (p_RTP_data->sequence_number - previous_sequence_number - 1);
                 previous_sequence_number = p_RTP_data->sequence_number;
-            }
-
-            if(1 == p_RTP_data->RTP_package_byte_1.little_endian.M)
-            {
-                if(NULL != p_RTP_session_context->p_function_give_out_payload)
-                {
-                    p_RTP_session_context->p_function_give_out_payload(
-                        p_RTP_session_context->this_session_handle,
-                        p_H264_buffer,
-                        H264_data_size,
-                        0,
-                        0);
-                }
-                p_H264_buffer_current_position = p_H264_buffer;
-                H264_data_size = 0;
             }
 
             libRTP_free(p_RTP_data);

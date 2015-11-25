@@ -3,16 +3,6 @@
 #include "libRTPCheckMacros.h"
 #include "libRTPPSPayloadProcessingThread.h"
 
-#define CHECK_PS_BUFFER_SIZE(size)                                          \
-if(PS_buffer_size - (p_PS_buffer_current_position - p_PS_buffer) < (size))  \
-{                                                                           \
-    PS_buffer_size = (size) * 2 + PS_buffer_size;                           \
-    p_temp = libRTP_realloc(p_PS_buffer, PS_buffer_size);                   \
-    CHECK_MEMORY_ALLOCATE_RESULT_AND_RETURN(p_temp);                        \
-    p_PS_buffer = p_temp;                                                   \
-    p_PS_buffer_current_position = p_PS_buffer + PS_buffer_size;            \
-}
-
 uint32_t WINAPI PS_payload_processing_thread(void* parameter)
 {
     RTP_session_context* p_RTP_session_context = (RTP_session_context*)parameter;
@@ -23,6 +13,7 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
     size_t PS_data_size = 0;
     size_t PS_buffer_size = USHRT_MAX;
 
+    int32_t result = 0;
     RTP_data* p_RTP_data = NULL;
 
     uint32_t previous_timestamp = 0;
@@ -44,7 +35,31 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
         // form PS data
         else
         {
-            CHECK_PS_BUFFER_SIZE(p_RTP_data->payload_size);
+            if(1 == p_RTP_data->RTP_package_byte_1.little_endian.M || p_RTP_data->timestamp != previous_timestamp)
+            {
+                if(NULL != p_RTP_session_context->p_function_give_out_payload)
+                {
+                    p_RTP_session_context->p_function_give_out_payload(
+                        p_RTP_session_context->this_session_handle,
+                        p_PS_buffer,
+                        PS_data_size,
+                        0,
+                        0);
+                }
+                p_PS_buffer_current_position = p_PS_buffer;
+                PS_data_size = 0;
+            }
+
+            result = check_buffer_size_and_realloc(
+                &p_PS_buffer,
+                &PS_buffer_size,
+                PS_data_size,
+                &p_PS_buffer_current_position,
+                p_RTP_data->payload_size);
+            if(LIBRTP_OK != result)
+            {
+                return result;
+            }
             memcpy(p_PS_buffer_current_position, p_RTP_data->payload_start_position, p_RTP_data->payload_size);
             p_PS_buffer_current_position += p_RTP_data->payload_size;
             PS_data_size += p_RTP_data->payload_size;
@@ -80,18 +95,7 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
                 previous_sequence_number = p_RTP_data->sequence_number;
             }
 
-            if(1 == p_RTP_data->RTP_package_byte_1.little_endian.M)
-            {
-                p_RTP_session_context->p_function_give_out_payload(
-                    p_RTP_session_context->this_session_handle,
-                    p_PS_buffer,
-                    PS_data_size,
-                    0,
-                    0);
-                p_PS_buffer_current_position = p_PS_buffer;
-                PS_data_size = 0;
-            }
-            libRTP_free(p_PS_buffer);
+            libRTP_free(p_RTP_data);
         }
     }
 
