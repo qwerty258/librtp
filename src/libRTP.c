@@ -86,7 +86,7 @@ LIBRTP_API int get_new_RTP_session(RTP_session_handle* p_handle)
 
 LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 {
-    int result;
+    int result = 0;
     CHECK_HANDLE(handle);
     if(global_RTP_session_context_pointer_array[handle]->session_started)
     {
@@ -101,6 +101,9 @@ LIBRTP_API int close_RTP_session(RTP_session_handle handle)
 
         WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->Unpack_RTP_header_thread_handle, INFINITE);
         CloseHandle(global_RTP_session_context_pointer_array[handle]->Unpack_RTP_header_thread_handle);
+
+        WaitForSingleObject(global_RTP_session_context_pointer_array[handle]->RTP_payload_processing_thread_handle, INFINITE);
+        CloseHandle(global_RTP_session_context_pointer_array[handle]->RTP_payload_processing_thread_handle);
 #endif // _WIN32
 
         result = close_sockets(global_RTP_session_context_pointer_array[handle]);
