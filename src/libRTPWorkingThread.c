@@ -79,13 +79,6 @@ uint32_t WINAPI Unpack_RTP_header(void* parameter)
             unpack_RTP_header(raw_data);
             if(2 == raw_data->RTP_package_byte_0.little_endian.V)
             {
-#ifdef _DEBUG
-                for(size_t i = 0; i < 4; i++)
-                {
-                    printf("%02X", raw_data->payload_start_position[i]);
-                }
-                printf("\n");
-#endif // _DEBUG
                 if(!concurrent_queue_pushback(p_RTP_session_context->concurrent_queue_handle_for_payload, raw_data))
                 {
                     libRTP_free(raw_data);
