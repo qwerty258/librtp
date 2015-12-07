@@ -275,11 +275,12 @@ LIBRTP_API int RTP_session_start(RTP_session_handle handle)
     return LIBRTP_OK;
 }
 
-LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function)
+LIBRTP_API int set_RTP_session_payload_give_out_callback(RTP_session_handle handle, function_give_out_payload p_function, void* user_data)
 {
     CHECK_HANDLE(handle);
     CHECK_NULL_PARAMETER_AND_RETURN(p_function);
     CHECK_SESSION_STARTED_NO_SET(global_RTP_session_context_pointer_array[handle]->session_started);
     global_RTP_session_context_pointer_array[handle]->p_function_give_out_payload = p_function;
+    global_RTP_session_context_pointer_array[handle]->user_data = user_data;
     return LIBRTP_OK;
 }
