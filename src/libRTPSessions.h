@@ -57,6 +57,7 @@ typedef struct _RTP_session_context
 
     function_payload_processing_thread p_function_payload_processing_thread;
     function_give_out_payload p_function_give_out_payload;
+    void* user_data;
 }RTP_session_context;
 
 #endif // !_LIBRTP_SESSIONS_H_

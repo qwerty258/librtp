@@ -116,7 +116,8 @@ uint32_t WINAPI H264_payload_processing_thread(void* parameter)
                         p_H264_buffer,
                         H264_data_size,
                         0,
-                        0);
+                        0,
+                        p_RTP_session_context->user_data);
                 }
                 p_H264_buffer_current_position = p_H264_buffer;
                 H264_data_size = 0;

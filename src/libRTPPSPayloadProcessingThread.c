@@ -44,7 +44,8 @@ uint32_t WINAPI PS_payload_processing_thread(void* parameter)
                         p_PS_buffer,
                         PS_data_size,
                         0,
-                        0);
+                        0,
+                        p_RTP_session_context->user_data);
                 }
                 p_PS_buffer_current_position = p_PS_buffer;
                 PS_data_size = 0;

@@ -5,6 +5,6 @@
 #include <stdint.h>
 #include "libRTPSessionHandleDefine.h"
 
-typedef int(*function_give_out_payload)(RTP_session_handle session_handle, uint8_t* payload, size_t payload_size, uint16_t sequence_number, uint32_t timestamp);
+typedef int(*function_give_out_payload)(RTP_session_handle session_handle, uint8_t* payload, size_t payload_size, uint16_t sequence_number, uint32_t timestamp, void* user_data);
 
 #endif // !_LIBRTP_CALLBACK_DEFINE_H_
